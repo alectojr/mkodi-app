@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKodi - Tanzania Revenue Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .nav-link { transition: all 0.2s; }
+        .nav-link:hover { color: #15803d; }
+        .card { transition: transform 0.2s; }
+        .card:hover { transform: translateY(-4px); }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Top Navigation -->
+    <nav class="bg-white shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <h1 class="text-3xl font-bold text-green-700">MKodi</h1>
+            </div>
+            <button onclick="window.location.href='/logout/'" 
+        class="ml-4 text-red-600 hover:text-red-700 font-medium">
+    Logout
+</button>
+
+            <div class="flex items-center gap-8 text-gray-600">
+                <button onclick="showSection('feed')" class="nav-link flex flex-col items-center" title="Home" aria-label="Home">
+                    <i class="fas fa-home text-xl"></i>
+                </button>
+                <button onclick="showSection('360')" class="nav-link flex flex-col items-center" title="360° View" aria-label="360 Degree View">
+                    <i class="fas fa-globe text-xl"></i>
+                </button>
+                <button onclick="showSection('payments')" class="nav-link flex flex-col items-center" title="Payments" aria-label="Payments">
+                    <i class="fas fa-money-bill-wave text-xl"></i>
+                </button>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <button onclick="showSection('details')"
+                        class="flex items-center gap-3 hover:bg-gray-100 px-4 py-2 rounded-full"
+                        title="My Profile" aria-label="My Profile">
+                    <img src="https://via.placeholder.com/40" alt="{{ user_name }} Profile" class="w-9 h-9 rounded-full">
+                    <div class="text-left">
+                        <p class="font-medium text-sm">{{ user_name }}</p>
+                    </div>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-6xl mx-auto flex gap-6 px-4 py-6">
+
+        <!-- Main Content -->
+        <div class="flex-1 max-w-2xl">
+            
+            <!-- Feed / Home -->
+            <div id="feedSection" class="section">
+                <div class="bg-white rounded-3xl shadow p-6 mb-6">
+                    <h2 class="text-2xl font-bold text-green-700">Welcome back, {{ user_name }} 👋</h2>
+                    <p class="text-gray-600">Your Tax Compliance Score: <span class="font-bold text-green-600">68%</span></p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <button onclick="startUSSD()" class="card bg-white rounded-3xl p-6 shadow text-left" title="Pay via USSD" aria-label="Pay Tax via USSD">
+                        <div class="text-4xl mb-4">📱</div>
+                        <h3 class="font-semibold text-lg">Pay Tax via USSD</h3>
+                        <p class="text-gray-500">Fast • Zero-rated • No internet needed</p>
+                    </button>
+
+                    <button onclick="makePayment()" class="card bg-white rounded-3xl p-6 shadow text-left" title="Make Payment" aria-label="Make Payment">
+                        <div class="text-4xl mb-4">💰</div>
+                        <h3 class="font-semibold text-lg">Make Payment</h3>
+                        <p class="text-gray-500">GePG + Mobile Money</p>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 360 View -->
+            <div id="360Section" class="section hidden">
+    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+        <span>360° Revenue Intelligence View</span>
+    </h2>
+    
+    <div id="viewResult" class="bg-white rounded-3xl shadow p-8">
+        <!-- Content will be loaded here dynamically -->
+        <p class="text-gray-500 text-center py-12">Click button below to load full profile</p>
+    </div>
+
+    <button onclick="load360View()"
+            class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-2xl font-semibold text-lg">
+        🔄 Load 360° View
+    </button>
+</div>
+            <!-- My Details -->
+            <div id="detailsSection" class="section hidden bg-white rounded-3xl shadow p-8">
+                <h2 class="text-2xl font-bold mb-6">My Profile</h2>
+                <div class="space-y-4">
+                    <p><strong>Full Name:</strong> {{ user_name }}</p>
+                    <p><strong>TIN:</strong> {{ user_tin }}</p>
+                    {% if user_email %}<p><strong>Email:</strong> {{ user_email }}</p>{% endif %}
+                    <p><strong>Compliance Score:</strong> 68%</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+function load360View() {
+    const resultDiv = document.getElementById('viewResult');
+    resultDiv.innerHTML = `<p class="text-center py-8">Loading 360° View...</p>`;
+
+    fetch('/api/360-view/12345678901/')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                resultDiv.innerHTML = `<p class="text-red-600">${data.error || 'Failed to load'}</p>`;
+                return;
+            }
+
+            const tp = data.taxpayer;
+            let html = `
+                <div class="space-y-8">
+                    <div class="border-b pb-6">
+                        <h3 class="font-bold text-lg mb-4">Personal Information</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div><strong>Name:</strong> ${tp.name}</div>
+                            <div><strong>TIN:</strong> ${tp.tin_number}</div>
+                            <div><strong>Phone:</strong> ${tp.phone}</div>
+                            <div><strong>Est. Income:</strong> TZS ${parseInt(tp.estimated_income).toLocaleString()}</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- BRELA Card -->
+                        <div class="bg-green-50 p-6 rounded-2xl">
+                            <h4 class="font-semibold text-green-800 mb-3">🏢 BRELA Business Data</h4>
+                            ${data.brela && typeof data.brela === 'object' ? `
+                                <p><strong>Business:</strong> ${data.brela.business_name}</p>
+                                <p><strong>BRELA No:</strong> ${data.brela.brela_number}</p>
+                                <p><strong>Assets Value:</strong> TZS ${parseInt(data.brela.assets_value).toLocaleString()}</p>
+                            ` : '<p class="text-gray-500">No business registered</p>'}
+                        </div>
+
+                        <!-- Land Card -->
+                        <div class="bg-amber-50 p-6 rounded-2xl">
+                            <h4 class="font-semibold text-amber-800 mb-3">🏡 Land & Property</h4>
+                            ${data.land && typeof data.land === 'object' ? `
+                                <p><strong>Properties Owned:</strong> ${data.land.total_properties}</p>
+                                <p><strong>Total Value:</strong> TZS ${parseInt(data.land.total_value).toLocaleString()}</p>
+                            ` : '<p class="text-gray-500">No land records found</p>'}
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-2xl">
+                        <h4 class="font-semibold text-blue-800 mb-3">📊 TRA Intelligence</h4>
+                        <p><strong>Compliance Score:</strong> <span class="font-bold">${tp.tax_compliance_score}%</span></p>
+                        <p><strong>Credit Score:</strong> <span class="font-bold">${tp.credit_score}</span></p>
+                        <p><strong>Risk Level:</strong> <span class="font-bold text-red-600">${data.overall_risk}</span></p>
+                        <p class="mt-3 text-sm">${data.recommendation}</p>
+                    </div>
+                </div>
+            `;
+            resultDiv.innerHTML = html;
+        })
+        .catch(() => {
+            resultDiv.innerHTML = `<p class="text-red-600">Error loading data. Make sure server is running.</p>`;
+        });
+}
+</script>
+
+    <script>
+        function showSection(section) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
+            if (section === 'feed') document.getElementById('feedSection').classList.remove('hidden');
+            else if (section === '360') document.getElementById('360Section').classList.remove('hidden');
+            else if (section === 'details') document.getElementById('detailsSection').classList.remove('hidden');
+        }
+
+        function startUSSD() {
+            alert("📱 To pay via USSD, dial *150*00# and follow the prompts to pay your taxes.");
+        }
+
+        function makePayment() {
+            alert("💰 Redirecting to payment portal...");
+            window.location.href = "/payments/";
+        }
+    </script>
+</body>
+</html>
