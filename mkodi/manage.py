@@ -15,6 +15,25 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+
+    if len(sys.argv) >= 2 and sys.argv[1] == 'runserver':
+        if any(arg in ('--help', '-h', '--version') for arg in sys.argv[1:]):
+            execute_from_command_line(sys.argv)
+            return
+        try:
+            from run import parse_bind_arg, run_server
+        except ImportError:
+            execute_from_command_line(sys.argv)
+            return
+
+        host, port = parse_bind_arg(sys.argv[1:])
+        if host is not None:
+            if '--noreload' in sys.argv:
+                run_server(host, port, use_reloader=False)
+            else:
+                run_server(host, port)
+            return
+
     execute_from_command_line(sys.argv)
 
 
