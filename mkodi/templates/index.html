@@ -55,13 +55,24 @@
     <div class="max-w-6xl mx-auto flex gap-6 px-4 py-6">
 
         <!-- Main Content -->
-        <div class="flex-1 max-w-2xl">
+        <div class="flex-1 max-w-3xl">
             
             <!-- Feed / Home -->
             <div id="feedSection" class="section">
                 <div class="bg-white rounded-3xl shadow p-6 mb-6">
                     <h2 class="text-2xl font-bold text-green-700">Welcome back, {{ user_name }} 👋</h2>
                     <p class="text-gray-600">Your Tax Compliance Score: <span class="font-bold text-green-600">68%</span></p>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow p-8 mb-6">
+                    <p class="text-sm uppercase tracking-wide text-green-700 font-semibold">Innovation Idea</p>
+                    <h3 class="text-3xl font-bold text-gray-900 mt-2">MKodi (Mobile-Kodi)</h3>
+                    <p class="text-gray-600 mt-3">A mobile-first digital platform designed to bridge fragmented government data and the informal economy in Tanzania through zero-rated access and simple USSD onboarding.</p>
+                    <p class="text-gray-700 mt-4 font-semibold">Tagline: The Future of Integrated Revenue Intelligence in Tanzania</p>
+                    <div class="mt-4 text-sm text-gray-600 space-y-1">
+                        <p><strong>Submitted by:</strong> Micaih Meshark Nyimbi</p>
+                        <p><strong>Date:</strong> 14 July 2026</p>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -71,30 +82,88 @@
                         <p class="text-gray-500">Fast • Zero-rated • No internet needed</p>
                     </button>
 
-                    <button onclick="makePayment()" class="card bg-white rounded-3xl p-6 shadow text-left" title="Make Payment" aria-label="Make Payment">
+                    <button onclick="makePayment()" class="card bg-white rounded-3xl p-6 shadow text-left" title="Open Payment Flow" aria-label="Open Payment Flow">
                         <div class="text-4xl mb-4">💰</div>
                         <h3 class="font-semibold text-lg">Make Payment</h3>
                         <p class="text-gray-500">GePG + Mobile Money</p>
                     </button>
                 </div>
+
+                <div class="bg-white rounded-3xl shadow p-8 mt-6">
+                    <h4 class="text-xl font-bold text-green-700 mb-4">Executive Summary</h4>
+                    <p class="text-gray-700">MKodi delivers <strong>USSD + Zero-Rated Web Portal</strong> for easy access, real-time data integration, instant GePG control numbers, STK Push payments, automated risk scoring, and a 360° dashboard for TRA officers.</p>
+                    <div class="mt-4 space-y-2 text-sm text-gray-700">
+                        <p><strong>Problem:</strong> Large informal sector, fragmented data, complex tax processes, and high manual workload for TRA officers.</p>
+                        <p><strong>Solution:</strong> Pre-filled assessments, secure payments, and compliance-based credit scoring for incentives and formalization.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow p-8 mt-6">
+                    <h4 class="text-xl font-bold text-green-700 mb-4">Key Features</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>Simplified tax filing for informal traders</li>
+                        <li>Pre-filled assessments using integrated data</li>
+                        <li>Secure payments through GePG</li>
+                        <li>Credit score based on compliance history</li>
+                        <li>Real-time 360° view for TRA with BRELA, Land, and income data</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow p-8 mt-6">
+                    <h4 class="text-xl font-bold text-green-700 mb-4">Strategic Goals</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>Onboard 1,000,000 informal traders within 24 months</li>
+                        <li>Reduce TRA manual audit workload by 40%</li>
+                        <li>Achieve 100% zero-rated access across major networks</li>
+                        <li>Integrate with at least 3 key government systems including BRELA, Land Registry, and Banks</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow p-8 mt-6">
+                    <h4 class="text-xl font-bold text-green-700 mb-4">Implementation Phases</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li><strong>Phase 1 (Months 1-3):</strong> System development, GePG integration, and USSD logic</li>
+                        <li><strong>Phase 2 (Months 4-6):</strong> Pilot in Kariakoo and Mwanza markets</li>
+                        <li><strong>Phase 3 (Months 7-18):</strong> Nationwide rollout and scaling</li>
+                    </ul>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow p-8 mt-6">
+                    <h4 class="text-xl font-bold text-green-700 mb-4">Budget Snapshot</h4>
+                    <p class="text-gray-700">Estimated budget of TZS 50 million across technical development, system integration, marketing, compliance, and contingency.</p>
+                </div>
+
+                <div class="bg-white rounded-3xl shadow p-8 mt-6">
+                    <h4 class="text-xl font-bold text-green-700 mb-4">Expected Impact</h4>
+                    <p class="text-gray-700">The platform aims to significantly expand the tax base, simplify compliance for small businesses, and improve transparent revenue collection with better data-driven decisions for TRA.</p>
+                </div>
             </div>
 
             <!-- 360 View -->
             <div id="360Section" class="section hidden">
-    <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
-        <span>360° Revenue Intelligence View</span>
-    </h2>
-    
-    <div id="viewResult" class="bg-white rounded-3xl shadow p-8">
-        <!-- Content will be loaded here dynamically -->
-        <p class="text-gray-500 text-center py-12">Click button below to load full profile</p>
-    </div>
+                <h2 class="text-2xl font-bold mb-6 flex items-center gap-3">
+                    <span>360° Revenue Intelligence View</span>
+                </h2>
+                <div id="viewResult" class="bg-white rounded-3xl shadow p-8">
+                    <p class="text-gray-500 text-center py-12">Click button below to load full profile</p>
+                </div>
 
-    <button onclick="load360View()"
-            class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-2xl font-semibold text-lg">
-        🔄 Load 360° View
-    </button>
-</div>
+                <button onclick="load360View()"
+                        class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-2xl font-semibold text-lg">
+                    🔄 Load 360° View
+                </button>
+            </div>
+
+            <!-- Payments -->
+            <div id="paymentsSection" class="section hidden bg-white rounded-3xl shadow p-8">
+                <h2 class="text-2xl font-bold mb-6">Payment & Access Model</h2>
+                <div class="space-y-4 text-gray-700">
+                    <p><strong>Zero-rated access</strong> ensures that taxpayers can use the service without data charges on major mobile networks.</p>
+                    <p><strong>USSD + Zero-Rated Web Portal</strong> supports simple onboarding for informal traders and micro-business owners.</p>
+                    <p><strong>GePG Control Number</strong> generation and Mobile Money payments provide a fast and transparent collection experience.</p>
+                </div>
+            </div>
+
             <!-- My Details -->
             <div id="detailsSection" class="section hidden bg-white rounded-3xl shadow p-8">
                 <h2 class="text-2xl font-bold mb-6">My Profile</h2>
@@ -177,6 +246,7 @@ function load360View() {
             document.querySelectorAll('.section').forEach(sec => sec.classList.add('hidden'));
             if (section === 'feed') document.getElementById('feedSection').classList.remove('hidden');
             else if (section === '360') document.getElementById('360Section').classList.remove('hidden');
+            else if (section === 'payments') document.getElementById('paymentsSection').classList.remove('hidden');
             else if (section === 'details') document.getElementById('detailsSection').classList.remove('hidden');
         }
 
@@ -185,8 +255,7 @@ function load360View() {
         }
 
         function makePayment() {
-            alert("💰 Redirecting to payment portal...");
-            window.location.href = "/payments/";
+            showSection('payments');
         }
     </script>
 </body>
