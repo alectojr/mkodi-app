@@ -1,4 +1,4 @@
-{% load static %}
+﻿{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +15,14 @@
                 <p>Secure login to Tanzania’s mobile-first tax portal</p>
             </div>
             <div class="form-body">
-                <form id="loginForm" method="POST" class="space-y-6">
+                {% if messages %}
+                <div style="margin-bottom: 24px; padding: 18px; background: #fff1f2; border: 1px solid #fecdd3; color: #b91c1c; border-radius: 18px;">
+                    {% for message in messages %}
+                    <p>{{ message }}</p>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <form id="loginForm" method="POST" novalidate>
                     {% csrf_token %}
                     <div>
                         <label for="tin_number">TIN Number *</label>
@@ -32,11 +39,11 @@
                     <a href="/signup/" style="color: #2563eb; text-decoration: none;">Create Account</a>
                 </div>
             </div>
-
+        </div>
+    </div>
     <script>
         document.getElementById('loginForm').addEventListener('submit', function(e) {
             const tin = document.getElementById('tin_number').value.trim();
-
             if (!tin) {
                 e.preventDefault();
                 alert("Please enter your TIN Number");
@@ -45,3 +52,4 @@
     </script>
 </body>
 </html>
+

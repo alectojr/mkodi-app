@@ -1,4 +1,5 @@
-{% extends "admin/base_site.html" %}
+{% load static %}
+{% extends "admin/base.html" %}
 
 {% block title %}MKodi Admin{% endblock %}
 
@@ -10,7 +11,7 @@
 {% endblock %}
 
 {% block extrastyle %}
-<link rel="stylesheet" href="/static/css/mkodi-style.css">
+<link rel="stylesheet" href="{% static 'css/mkodi-style.css' %}">
 <style>
     .module caption {
         font-size: 1.1rem;

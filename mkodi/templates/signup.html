@@ -22,7 +22,7 @@
                     {% endfor %}
                 </div>
                 {% endif %}
-                <form id="signupForm" method="POST" class="space-y-6">
+                <form id="signupForm" method="POST" novalidate>
                     {% csrf_token %}
                     <div>
                         <label for="full_name">Full Name *</label>
@@ -55,56 +55,46 @@
                     Already have an account? <a href="/" style="color: #2563eb; text-decoration: none;">Login here</a>
                 </div>
             </div>
-
+        </div>
+    </div>
     <script>
         document.getElementById('signupForm').addEventListener('submit', function(e) {
-            console.log('Form submitted');
-
             const fullName = document.getElementById('full_name').value.trim();
             const tinNumber = document.getElementById('tin_number').value.trim();
             const phoneNumber = document.getElementById('phone_number').value.trim();
             const password = document.getElementById('password').value;
             const passwordConfirm = document.getElementById('password_confirm').value;
 
-            console.log('Form data:', {fullName, tinNumber, phoneNumber, password, passwordConfirm});
-
             if (!fullName) {
                 e.preventDefault();
                 alert("Please enter your full name");
                 return;
             }
-
             if (!tinNumber) {
                 e.preventDefault();
                 alert("Please enter your TIN number");
                 return;
             }
-
             if (!phoneNumber) {
                 e.preventDefault();
                 alert("Please enter your phone number");
                 return;
             }
-
             if (!password) {
                 e.preventDefault();
                 alert("Please enter a password");
                 return;
             }
-
             if (password.length < 8) {
                 e.preventDefault();
                 alert("Password must be at least 8 characters long");
                 return;
             }
-
             if (password !== passwordConfirm) {
                 e.preventDefault();
                 alert("Passwords do not match");
                 return;
             }
-
-            console.log('All validations passed, submitting...');
         });
     </script>
 </body>
