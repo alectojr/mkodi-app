@@ -1,91 +1,62 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MKodi - Tanzania Revenue Intelligence</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        body { font-family: system-ui, -apple-system, sans-serif; }
-        .nav-link { transition: all 0.2s; }
-        .nav-link:hover { color: #15803d; }
-        .card { transition: transform 0.2s; }
-        .card:hover { transform: translateY(-4px); }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/mkodi-style.css' %}">
 </head>
-<body class="bg-gray-100">
-
-    <!-- Top Navigation -->
-    <nav class="bg-white shadow-md sticky top-0 z-50">
-        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
-            <div class="flex items-center gap-4">
-                <h1 class="text-3xl font-bold text-green-700">MKodi</h1>
+<body class="page-shell">
+    <div class="page-content">
+        <div class="navbar" style="margin-bottom: 26px;">
+            <div class="brand">
+                <h1>MKodi <span>Portal</span></h1>
             </div>
-            <button onclick="window.location.href='/logout/'" 
-        class="ml-4 text-red-600 hover:text-red-700 font-medium">
-    Logout
-</button>
-
-            <div class="flex items-center gap-8 text-gray-600">
-                <button onclick="showSection('feed')" class="nav-link flex flex-col items-center" title="Home" aria-label="Home">
-                    <i class="fas fa-home text-xl"></i>
-                </button>
-                <button onclick="showSection('360')" class="nav-link flex flex-col items-center" title="360° View" aria-label="360 Degree View">
-                    <i class="fas fa-globe text-xl"></i>
-                </button>
-                <button onclick="showSection('payments')" class="nav-link flex flex-col items-center" title="Payments" aria-label="Payments">
-                    <i class="fas fa-money-bill-wave text-xl"></i>
-                </button>
-            </div>
-
-            <div class="flex items-center gap-4">
-                <button onclick="showSection('details')"
-                        class="flex items-center gap-3 hover:bg-gray-100 px-4 py-2 rounded-full"
-                        title="My Profile" aria-label="My Profile">
-                    <img src="https://via.placeholder.com/40" alt="{{ user_name }} Profile" class="w-9 h-9 rounded-full">
-                    <div class="text-left">
-                        <p class="font-medium text-sm">{{ user_name }}</p>
-                    </div>
-                </button>
+            <div class="nav-links">
+                <button onclick="showSection('feed')">Home</button>
+                <button onclick="showSection('360')">360° View</button>
+                <button onclick="showSection('payments')">Payments</button>
+                <button onclick="showSection('details')">Profile</button>
+                <button onclick="window.location.href='/logout/'">Logout</button>
             </div>
         </div>
-    </nav>
 
-    <div class="max-w-6xl mx-auto flex gap-6 px-4 py-6">
+        <div class="dashboard-hero card">
+            <h2>Welcome back, {{ user_name }}</h2>
+            <p>MKodi gives you a unified experience for tax compliance, payment intelligence, and real-time insights.</p>
+        </div>
 
-        <!-- Main Content -->
-        <div class="flex-1 max-w-3xl">
+        <div class="flex-1 max-w-3xl" style="margin-top: 28px;">
             
             <!-- Feed / Home -->
             <div id="feedSection" class="section">
-                <div class="bg-white rounded-3xl shadow p-6 mb-6">
-                    <h2 class="text-2xl font-bold text-green-700">Welcome back, {{ user_name }} 👋</h2>
-                    <p class="text-gray-600">Your Tax Compliance Score: <span class="font-bold text-green-600">68%</span></p>
+                <div class="card" style="margin-bottom: 24px;">
+                    <h2 class="section-title">Your Compliance Snapshot</h2>
+                    <p style="margin: 0; color: #475569;">Your current compliance score is <strong>68%</strong>. Keep your data updated and access payment tools instantly.</p>
                 </div>
 
-                <div class="bg-white rounded-3xl shadow p-8 mb-6">
-                    <p class="text-sm uppercase tracking-wide text-green-700 font-semibold">Innovation Idea</p>
-                    <h3 class="text-3xl font-bold text-gray-900 mt-2">MKodi (Mobile-Kodi)</h3>
-                    <p class="text-gray-600 mt-3">A mobile-first digital platform designed to bridge fragmented government data and the informal economy in Tanzania through zero-rated access and simple USSD onboarding.</p>
-                    <p class="text-gray-700 mt-4 font-semibold">Tagline: The Future of Integrated Revenue Intelligence in Tanzania</p>
-                    <div class="mt-4 text-sm text-gray-600 space-y-1">
+                <div class="card" style="margin-bottom: 24px;">
+                    <div style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: .18em; color: #2563eb; margin-bottom: 12px;">Innovation Idea</div>
+                    <h3 class="section-title">MKodi (Mobile-Kodi)</h3>
+                    <p style="color: #475569; line-height: 1.85;">A mobile-first digital platform designed to bridge fragmented government data and the informal economy in Tanzania through zero-rated access and simple USSD onboarding.</p>
+                    <p style="margin-top: 18px; font-weight: 700; color: #111827;">Tagline: The Future of Integrated Revenue Intelligence in Tanzania</p>
+                    <div style="margin-top: 18px; color: #475569; font-size: 0.95rem;">
                         <p><strong>Submitted by:</strong> Micaih Meshark Nyimbi</p>
                         <p><strong>Date:</strong> 14 July 2026</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <button onclick="startUSSD()" class="card bg-white rounded-3xl p-6 shadow text-left" title="Pay via USSD" aria-label="Pay Tax via USSD">
-                        <div class="text-4xl mb-4">📱</div>
-                        <h3 class="font-semibold text-lg">Pay Tax via USSD</h3>
-                        <p class="text-gray-500">Fast • Zero-rated • No internet needed</p>
+                <div class="grid-2" style="margin-bottom: 24px; gap: 20px;">
+                    <button onclick="startUSSD()" class="card" style="text-align: left; border: 1px solid #dbeafe;">
+                        <div style="font-size: 2.4rem; margin-bottom: 18px;">📱</div>
+                        <h3 style="margin: 0 0 8px; font-size: 1.1rem;">Pay Tax via USSD</h3>
+                        <p style="margin: 0; color: #475569;">Fast · Zero-rated · No internet needed</p>
                     </button>
-
-                    <button onclick="makePayment()" class="card bg-white rounded-3xl p-6 shadow text-left" title="Open Payment Flow" aria-label="Open Payment Flow">
-                        <div class="text-4xl mb-4">💰</div>
-                        <h3 class="font-semibold text-lg">Make Payment</h3>
-                        <p class="text-gray-500">GePG + Mobile Money</p>
+                    <button onclick="makePayment()" class="card" style="text-align: left; border: 1px solid #dbeafe;">
+                        <div style="font-size: 2.4rem; margin-bottom: 18px;">💰</div>
+                        <h3 style="margin: 0 0 8px; font-size: 1.1rem;">Make Payment</h3>
+                        <p style="margin: 0; color: #475569;">GePG + Mobile Money</p>
                     </button>
                 </div>
 

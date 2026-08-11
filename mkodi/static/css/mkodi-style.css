@@ -1,0 +1,240 @@
+/* MKodi classic UI theme */
+:root {
+    color-scheme: light;
+    font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f4f7fb;
+    color: #1f2937;
+}
+
+body {
+    margin: 0;
+    background: linear-gradient(180deg, #f7fafc 0%, #eef2ff 100%);
+    min-height: 100vh;
+}
+
+button, .button, input, select, textarea {
+    font: inherit;
+}
+
+input, select, textarea {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    padding: 14px 16px;
+    background: #fff;
+    color: #111827;
+    transition: border-color .2s ease, box-shadow .2s ease;
+}
+
+input:focus, select:focus, textarea:focus {
+    border-color: #4f46e5;
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+}
+
+.btn-primary, button[type='submit'] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #2563eb;
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 14px 22px;
+    cursor: pointer;
+    transition: transform .15s ease, background .15s ease, box-shadow .15s ease;
+    box-shadow: 0 12px 30px rgba(37, 99, 235, 0.18);
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+    transform: translateY(-1px);
+}
+
+.card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 24px;
+    box-shadow: 0 18px 45px rgba(15, 23, 42, 0.06);
+    padding: 28px;
+}
+
+.page-shell {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-content {
+    flex: 1;
+    width: min(1100px, 100%);
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+.form-shell {
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 28px;
+    overflow: hidden;
+    background: rgba(255,255,255,.95);
+    box-shadow: 0 24px 70px rgba(15, 23, 42, 0.12);
+}
+
+.form-header {
+    background: linear-gradient(135deg, #2563eb 0%, #38bdf8 100%);
+    color: white;
+    text-align: center;
+    padding: 40px 28px;
+}
+
+.form-header h1 {
+    margin: 0;
+    font-size: clamp(2.5rem, 2rem + 1vw, 3.6rem);
+}
+
+.form-header p {
+    margin: 14px auto 0;
+    max-width: 16rem;
+    color: rgba(255,255,255,0.86);
+    line-height: 1.7;
+}
+
+.form-body {
+    padding: 32px 32px 40px;
+}
+
+.section-title {
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    border-radius: 20px;
+    background: linear-gradient(180deg, rgba(254, 247, 255, 0.95), #fff);
+    border: 1px solid rgba(79, 70, 229, 0.14);
+    padding: 24px;
+}
+
+.stat-card strong {
+    display: block;
+    margin-bottom: 0.75rem;
+    color: #1f2937;
+}
+
+.dashboard-hero {
+    border-radius: 32px;
+    background: linear-gradient(135deg, #eef2ff 0%, #f8fafc 100%);
+    border: 1px solid #e0e7ff;
+    padding: 32px;
+}
+
+.dashboard-hero h2 {
+    margin: 0;
+    font-size: 2rem;
+    color: #111827;
+}
+
+.dashboard-hero p {
+    margin-top: 0.9rem;
+    color: #4b5563;
+    max-width: 45rem;
+    line-height: 1.8;
+}
+
+.navbar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.navbar .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.navbar .brand h1 {
+    margin: 0;
+    font-size: 1.6rem;
+}
+
+.navbar .brand span {
+    color: #2563eb;
+    font-weight: 800;
+}
+
+.navbar .nav-links {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.navbar .nav-links button {
+    border: 1px solid transparent;
+    background: rgba(37, 99, 235, 0.08);
+    color: #2563eb;
+    padding: 12px 18px;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.dashboard-panel {
+    border-radius: 24px;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    padding: 28px;
+}
+
+.dashboard-panel h3 {
+    margin-top: 0;
+}
+
+.footer-note {
+    text-align: center;
+    color: #6b7280;
+    font-size: 0.92rem;
+    margin-top: 28px;
+}
+
+.admin-brand {
+    background: linear-gradient(135deg, #2563eb 0%, #9333ea 100%);
+    color: white;
+    padding: 22px 32px;
+    border-radius: 0 0 22px 22px;
+    margin-bottom: 20px;
+}
+
+.admin-brand h1 {
+    margin: 0;
+    font-size: 1.9rem;
+}
+
+.admin-brand p {
+    margin: 10px 0 0;
+    color: rgba(255,255,255,0.85);
+}
+
+@media (max-width: 820px) {
+    .grid-2, .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}

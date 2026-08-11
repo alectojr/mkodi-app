@@ -1,95 +1,60 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MKodi - Create Account</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/mkodi-style.css' %}">
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
-
-    <div class="max-w-md w-full bg-white rounded-3xl shadow-2xl overflow-hidden">
-        <!-- Header -->
-        <div class="bg-green-700 text-white p-8 text-center">
-            <h1 class="text-4xl font-bold">MKodi</h1>
-            <p class="text-green-100 mt-2">Join the future of integrated revenue intelligence in Tanzania</p>
-        </div>
-
-        <div class="p-8">
-            {% if messages %}
-            <div class="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded-2xl">
-                {% for message in messages %}
-                <p>{{ message }}</p>
-                {% endfor %}
+<body class="page-shell">
+    <div class="page-content">
+        <div class="form-shell">
+            <div class="form-header">
+                <h1>MKodi</h1>
+                <p>Join the future of integrated revenue intelligence in Tanzania</p>
             </div>
-            {% endif %}
-
-            <form id="signupForm" method="POST" class="space-y-6">
-                {% csrf_token %}
-                <div>
-                    <label for="full_name" class="block text-sm font-medium text-gray-700 mb-1">
-                        Full Name <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-green-600">
+            <div class="form-body">
+                {% if messages %}
+                <div style="margin-bottom: 24px; padding: 18px; background: #fff1f2; border: 1px solid #fecdd3; color: #b91c1c; border-radius: 18px;">
+                    {% for message in messages %}
+                    <p>{{ message }}</p>
+                    {% endfor %}
                 </div>
-
-                <div>
-                    <label for="tin_number" class="block text-sm font-medium text-gray-700 mb-1">
-                        TIN Number <span class="text-red-500">*</span>
-                    </label>
-                    <input type="text" id="tin_number" name="tin_number" maxlength="20" placeholder="Enter your TIN" required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-green-600">
+                {% endif %}
+                <form id="signupForm" method="POST" class="space-y-6">
+                    {% csrf_token %}
+                    <div>
+                        <label for="full_name">Full Name *</label>
+                        <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
+                    </div>
+                    <div>
+                        <label for="tin_number">TIN Number *</label>
+                        <input type="text" id="tin_number" name="tin_number" maxlength="20" placeholder="Enter your TIN" required>
+                    </div>
+                    <div>
+                        <label for="phone_number">Phone Number *</label>
+                        <input type="tel" id="phone_number" name="phone_number" placeholder="255712345678" required>
+                    </div>
+                    <div>
+                        <label for="email">Email Address (Optional)</label>
+                        <input type="email" id="email" name="email" placeholder="yourname@example.com">
+                    </div>
+                    <div>
+                        <label for="password">Password *</label>
+                        <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+                        <p style="font-size: 0.9rem; color: #64748b; margin-top: 8px;">Minimum 8 characters</p>
+                    </div>
+                    <div>
+                        <label for="password_confirm">Confirm Password *</label>
+                        <input type="password" id="password_confirm" name="password_confirm" placeholder="Confirm your password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Create My MKodi Account</button>
+                </form>
+                <div style="margin-top: 24px; text-align: center; color: #475569; font-size: 0.95rem;">
+                    Already have an account? <a href="/" style="color: #2563eb; text-decoration: none;">Login here</a>
                 </div>
-
-                <div>
-                    <label for="phone_number" class="block text-sm font-medium text-gray-700 mb-1">
-                        Phone Number <span class="text-red-500">*</span>
-                    </label>
-                    <input type="tel" id="phone_number" name="phone_number" placeholder="255712345678" required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-green-600">
-                </div>
-
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
-                        Email Address (Optional)
-                    </label>
-                    <input type="email" id="email" name="email" placeholder="yourname@example.com"
-                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-green-600">
-                </div>
-
-                <div>
-                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
-                        Password <span class="text-red-500">*</span>
-                    </label>
-                    <input type="password" id="password" name="password" placeholder="Create a strong password" required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-green-600">
-                    <p class="text-xs text-gray-500 mt-1">Minimum 8 characters</p>
-                </div>
-
-                <div>
-                    <label for="password_confirm" class="block text-sm font-medium text-gray-700 mb-1">
-                        Confirm Password <span class="text-red-500">*</span>
-                    </label>
-                    <input type="password" id="password_confirm" name="password_confirm" placeholder="Confirm your password" required
-                           class="w-full px-4 py-3 border border-gray-300 rounded-2xl focus:outline-none focus:border-green-600">
-                </div>
-
-                <button type="submit"
-                        class="w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-2xl font-semibold text-lg transition">
-                    Create My MKodi Account
-                </button>
-            </form>
-
-            <div class="text-center mt-6 text-sm">
-                <p class="text-gray-600">
-                    Already have an account? 
-                    <a href="/" class="text-green-700 font-semibold hover:underline">Login here</a>
-                </p>
             </div>
-        </div>
-    </div>
 
     <script>
         document.getElementById('signupForm').addEventListener('submit', function(e) {

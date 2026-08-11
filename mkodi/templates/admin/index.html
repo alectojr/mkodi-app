@@ -1,0 +1,34 @@
+{% extends "admin/index.html" %}
+
+{% block content %}
+<div class="page-content">
+    <div class="admin-brand">
+        <h1>MKodi Admin Dashboard</h1>
+        <p>Manage taxpayers, payments, and integration insights from one polished console.</p>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <strong>Total Taxpayers</strong>
+            <p>Accessible from the admin list view</p>
+        </div>
+        <div class="stat-card">
+            <strong>Active Integrations</strong>
+            <p>BRELA, Land Registry, GePG, USSD</p>
+        </div>
+        <div class="stat-card">
+            <strong>Compliance</strong>
+            <p>Updated automatically with each taxpayer record</p>
+        </div>
+    </div>
+
+    <div class="dashboard-panel" style="margin-top: 24px;">
+        <h3>Quick actions</h3>
+        <ul style="margin-top: 16px; gap: 12px; display: grid;">
+            <li><a href="{{ app_list|first.url }}" style="color: #2563eb;">View registered Taxpayers</a></li>
+            <li><a href="{{ app_list|slice:1|first.url }}" style="color: #2563eb;">Manage Payments</a></li>
+            <li><a href="/admin/logout/" style="color: #2563eb;">Sign out</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

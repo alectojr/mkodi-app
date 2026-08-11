@@ -1,0 +1,33 @@
+{% extends "admin/base_site.html" %}
+
+{% block title %}MKodi Admin{% endblock %}
+
+{% block branding %}
+<div class="admin-brand">
+    <h1>MKodi Control Center</h1>
+    <p>Revenue intelligence for your TRA team</p>
+</div>
+{% endblock %}
+
+{% block extrastyle %}
+<link rel="stylesheet" href="/static/css/mkodi-style.css">
+<style>
+    .module caption {
+        font-size: 1.1rem;
+        color: #1f2937;
+    }
+    #header, .breadcrumbs, #user-tools, .nav-global {
+        display: none;
+    }
+    #content h1, #content h2 {
+        color: #111827;
+    }
+    .dashboard-module, .module, .grp-module {
+        border-radius: 24px;
+        border: 1px solid #e5e7eb;
+        box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+        padding: 22px;
+        background: #fff;
+    }
+</style>
+{% endblock %}
