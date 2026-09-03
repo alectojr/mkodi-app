@@ -26,10 +26,10 @@
         <h3>Quick actions</h3>
         <ul style="margin-top: 16px; gap: 12px; display: grid;">
             {% if app_list|length > 0 %}
-            <li><a href="{{ app_list|first.url }}" style="color: #2563eb;">View registered Taxpayers</a></li>
+            <li><a href="{{ app_list.0.url }}" style="color: #2563eb;">View registered Taxpayers</a></li>
             {% endif %}
             {% if app_list|length > 1 %}
-            <li><a href="{{ app_list|slice:1|first.url }}" style="color: #2563eb;">Manage Payments</a></li>
+            <li><a href="{{ app_list.1.url }}" style="color: #2563eb;">Manage Payments</a></li>
             {% endif %}
             <li><a href="/admin/logout/" style="color: #2563eb;">Sign out</a></li>
         </ul>

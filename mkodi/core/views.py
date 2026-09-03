@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
@@ -55,6 +56,33 @@ def login_view(request):
             messages.error(request, "Invalid TIN or Password")
 
     return render(request, 'login.html')
+
+
+def forgot_password_view(request):
+    temp_password = None
+    if request.method == 'POST':
+        tin = request.POST.get('tin_number', '').strip()
+        if not tin:
+            messages.error(request, "Please enter your TIN number")
+            return redirect('forgot_password')
+
+        try:
+            user = User.objects.get(username=tin)
+        except User.DoesNotExist:
+            messages.error(request, "No account found for that TIN")
+            return redirect('forgot_password')
+
+        fruits = [
+            'mango', 'banana', 'papaya', 'kiwi', 'guava', 'lychee', 'orange',
+            'pineapple', 'berry', 'apple', 'avocado', 'coconut', 'dragonfruit',
+            'starfruit'
+        ]
+        temp_password = random.choice(fruits)
+        user.set_password(temp_password)
+        user.save()
+        messages.success(request, f"Temporary password generated: {temp_password}")
+
+    return render(request, 'forgot_password.html', {'temp_password': temp_password})
 
 
 # Logout View
