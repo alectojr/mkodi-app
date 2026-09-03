@@ -28,6 +28,7 @@
         </section>
 
         <div class="flex-1 max-w-3xl dashboard-content" style="margin-top: 28px;">
+            {% if pending_payments %}<div class="portal-message"><strong>{{ pending_payments }} payment{{ pending_payments|pluralize }} pending.</strong> Review your payment history for details.</div>{% endif %}
             
             <!-- Feed / Home -->
             <div id="feedSection" class="section">

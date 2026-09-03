@@ -19,9 +19,20 @@
         </section>
         <section class="profile-details card">
             <h2>All user details</h2>
+            {% if taxpayer %}<p class="link-status"><strong>Account link status:</strong> <span class="status status-completed">Linked to admin record</span></p>{% endif %}
             {% if taxpayer %}<div class="profile-fields">
                 <p><strong>Full name</strong><span>{{ taxpayer.full_name }}</span></p><p><strong>TIN</strong><span>{{ taxpayer.tin_number }}</span></p><p><strong>NIDA</strong><span>{{ taxpayer.nida_number }}</span></p><p><strong>Phone</strong><span>{{ taxpayer.phone_number }}</span></p><p><strong>Email</strong><span>{{ taxpayer.email|default:'Not provided' }}</span></p><p><strong>Business</strong><span>{{ taxpayer.business_name|default:'Not provided' }}</span></p><p><strong>BRELA number</strong><span>{{ taxpayer.brela_number|default:'Not provided' }}</span></p><p><strong>Land parcel</strong><span>{{ taxpayer.land_parcel|default:'Not provided' }}</span></p><p><strong>Estimated income</strong><span>TZS {{ taxpayer.estimated_income }}</span></p><p><strong>Tax compliance</strong><span>{{ taxpayer.tax_compliance_score }}%</span></p><p><strong>Credit score</strong><span>{{ taxpayer.credit_score }}</span></p><p><strong>Account status</strong><span>{% if taxpayer.is_active %}Active{% else %}Inactive{% endif %}</span></p>
             </div>{% else %}<div class="empty-state">No taxpayer details are linked to this account.</div>{% endif %}
+        </section>
+        <section class="profile-details card password-panel">
+            <h2>Change password</h2>
+            <form method="post" action="{% url 'change_password' %}" class="password-form">
+                {% csrf_token %}
+                <input name="current_password" type="password" placeholder="Current password" required>
+                <input name="new_password" type="password" placeholder="New password (8+ characters)" required>
+                <input name="confirm_password" type="password" placeholder="Confirm new password" required>
+                <button class="btn-primary" type="submit">Update password</button>
+            </form>
         </section>
     </main>
 </body>

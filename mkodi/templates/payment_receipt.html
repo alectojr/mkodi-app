@@ -1,0 +1,31 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKodi - Payment Receipt</title>
+    <link rel="stylesheet" href="{% static 'css/mkodi-style.css' %}">
+</head>
+<body class="page-shell portal-shell">
+    <main class="page-content">
+        {% include 'partials/portal_nav.html' %}
+        <section class="page-heading"><p class="eyebrow">Payment record</p><h1>Payment receipt</h1><p>Keep this record for your reference.</p></section>
+        <section class="receipt-card card">
+            <div class="receipt-brand"><strong>MKodi</strong><span>Revenue Portal</span></div>
+            <div class="receipt-status"><span class="status status-{{ payment.status }}">{{ payment.status|title }}</span></div>
+            <div class="profile-fields">
+                <p><strong>Taxpayer</strong><span>{{ payment.taxpayer.full_name }}</span></p>
+                <p><strong>TIN</strong><span>{{ payment.taxpayer.tin_number }}</span></p>
+                <p><strong>Amount</strong><span>TZS {{ payment.amount }}</span></p>
+                <p><strong>Payment method</strong><span>{{ payment.payment_method|title }}</span></p>
+                <p><strong>Control number</strong><span>{{ payment.control_number }}</span></p>
+                <p><strong>Transaction ID</strong><span>{{ payment.transaction_id|default:'Pending' }}</span></p>
+                <p><strong>Created</strong><span>{{ payment.created_at|date:'d M Y, H:i' }}</span></p>
+                <p><strong>Paid at</strong><span>{{ payment.paid_at|date:'d M Y, H:i'|default:'Pending' }}</span></p>
+            </div>
+            <button class="btn-primary print-button" type="button" onclick="window.print()">Print receipt</button>
+        </section>
+    </main>
+</body>
+</html>

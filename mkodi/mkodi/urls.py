@@ -9,7 +9,7 @@ from taxpayers.views import taxpayer_lookup, register_taxpayer, account_lookup
 from ussd.views import ussd_handler
 from payments.views import generate_control_number, initiate_stk_push
 from integrations.views import brela_lookup, land_lookup, full_360_view
-from core.views import signup_view, login_view, logout_view, home_view, forgot_password_view, intelligence_view, payments_view, profile_view
+from core.views import signup_view, login_view, logout_view, home_view, forgot_password_view, intelligence_view, payments_view, profile_view, change_password_view, payment_receipt_view
 
 urlpatterns = [
     path('', login_view, name='login'),           # First page is Login
@@ -19,6 +19,8 @@ urlpatterns = [
     path('360-view/', intelligence_view, name='intelligence'),
     path('payments/', payments_view, name='payments'),
     path('profile/', profile_view, name='profile'),
+    path('change-password/', change_password_view, name='change_password'),
+    path('payments/<int:payment_id>/receipt/', payment_receipt_view, name='payment_receipt'),
     path('logout/', logout_view, name='logout'),
 
     path('admin/', admin.site.urls),

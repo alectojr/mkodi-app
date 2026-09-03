@@ -1,6 +1,9 @@
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from taxpayers.models import Taxpayer
+from payments.models import Payment
+import random
+import string
 from .models import USSDSession
 
 @csrf_exempt
@@ -41,7 +44,25 @@ def handle_ussd_menu(session, text):
                 return "END NIDA not found. Register first."
 
     elif user_input[0] == "2":
-        return "END Payment (GePG) - Coming Soon"
+        if len(user_input) == 1:
+            return "CON Enter your NIDA Number:"
+        if len(user_input) == 2:
+            return "CON Enter payment amount:"
+        try:
+            taxpayer = Taxpayer.objects.get(nida_number=user_input[1], is_active=True)
+            amount = float(user_input[2])
+            if amount <= 0:
+                raise ValueError
+            control_number = "99" + ''.join(random.choices(string.digits, k=10))
+            Payment.objects.create(
+                taxpayer=taxpayer,
+                control_number=control_number,
+                amount=amount,
+                payment_method='ussd',
+            )
+            return f"END Payment request created\nControl No: {control_number}\nAmount: TZS {amount:,.2f}"
+        except (Taxpayer.DoesNotExist, ValueError):
+            return "END Invalid NIDA or amount. Try again."
 
     elif user_input[0] == "0":
         return "END Thank you for using MKodi!"

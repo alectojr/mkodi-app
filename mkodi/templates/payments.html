@@ -15,6 +15,22 @@
             <h1>Payments</h1>
             <p>Track payments made through USSD, GePG, and mobile money.</p>
         </section>
+        {% if messages %}<div class="message-stack">{% for message in messages %}<div class="portal-message">{{ message }}</div>{% endfor %}</div>{% endif %}
+        <section class="payment-form card">
+            <h2>Start a payment</h2>
+            <form method="post" class="payment-request-form">
+                {% csrf_token %}
+                <label for="amount">Amount (TZS)</label>
+                <input id="amount" name="amount" type="number" min="1" step="0.01" required placeholder="Enter amount">
+                <label for="payment_method">Payment method</label>
+                <select id="payment_method" name="payment_method">
+                    <option value="ussd">USSD</option>
+                    <option value="gepg">GePG</option>
+                    <option value="mobile_money">Mobile money</option>
+                </select>
+                <button class="btn-primary" type="submit">Create payment request</button>
+            </form>
+        </section>
         <section class="payment-table-wrap">
             {% if payments %}
             <div class="payment-table-scroll"><table class="payment-table">
@@ -25,7 +41,7 @@
                     <td>{{ payment.control_number }}</td>
                     <td>{{ payment.transaction_id|default:'Pending' }}</td>
                     <td>TZS {{ payment.amount }}</td>
-                    <td><span class="status status-{{ payment.status }}">{{ payment.status|title }}</span></td>
+                    <td><span class="status status-{{ payment.status }}">{{ payment.status|title }}</span> <a href="{% url 'payment_receipt' payment.id %}">Receipt</a></td>
                 </tr>{% endfor %}</tbody>
             </table></div>
             {% else %}<div class="empty-state"><h2>No payments yet</h2><p>Your completed and pending payments will appear here.</p></div>{% endif %}

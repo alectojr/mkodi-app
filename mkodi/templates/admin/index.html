@@ -9,16 +9,16 @@
 
     <div class="stats-grid">
         <div class="stat-card">
-            <strong>Total Taxpayers</strong>
-            <p>Accessible from the admin list view</p>
+            <strong>{{ admin_metrics.taxpayers }} Taxpayers</strong>
+            <p>{{ admin_metrics.active_taxpayers }} active records</p>
         </div>
         <div class="stat-card">
-            <strong>Active Integrations</strong>
-            <p>BRELA, Land Registry, GePG, USSD</p>
+            <strong>{{ admin_metrics.payments }} Payments</strong>
+            <p>TZS {{ admin_metrics.payment_total }} recorded</p>
         </div>
         <div class="stat-card">
-            <strong>Compliance</strong>
-            <p>Updated automatically with each taxpayer record</p>
+            <strong>{{ admin_metrics.average_compliance|floatformat:0 }}% Compliance</strong>
+            <p>{{ admin_metrics.pending_payments }} payments pending</p>
         </div>
     </div>
 

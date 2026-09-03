@@ -1,6 +1,6 @@
 import random
 from django.shortcuts import render, redirect
-from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth import login, logout, authenticate, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -164,8 +164,19 @@ def home_view(request):
         'user_name': taxpayer.full_name if taxpayer else user.first_name or user.username,
         'user_email': taxpayer.email if taxpayer else user.email,
         'taxpayer': taxpayer,
+        'pending_payments': Payment.objects.filter(taxpayer=taxpayer, status='pending').count() if taxpayer else 0,
     }
     return render(request, 'index.html', context)
+
+
+@login_required(login_url='/')
+def payment_receipt_view(request, payment_id):
+    taxpayer = Taxpayer.objects.filter(tin_number=request.user.username).first()
+    payment = Payment.objects.filter(id=payment_id, taxpayer=taxpayer).first()
+    if payment is None:
+        messages.error(request, 'Payment receipt not found.')
+        return redirect('payments')
+    return render(request, 'payment_receipt.html', {'payment': payment})
 
 
 @login_required(login_url='/')
@@ -177,6 +188,27 @@ def intelligence_view(request):
 @login_required(login_url='/')
 def payments_view(request):
     taxpayer = Taxpayer.objects.filter(tin_number=request.user.username).first()
+    if request.method == 'POST' and taxpayer:
+        amount = request.POST.get('amount', '').strip()
+        method = request.POST.get('payment_method', 'mobile_money').strip()
+        if method not in {'ussd', 'gepg', 'mobile_money'}:
+            messages.error(request, 'Choose a valid payment method.')
+        else:
+            try:
+                amount_value = float(amount)
+                if amount_value <= 0:
+                    raise ValueError
+                control_number = '99' + ''.join(random.choices('0123456789', k=10))
+                Payment.objects.create(
+                    taxpayer=taxpayer,
+                    control_number=control_number,
+                    amount=amount_value,
+                    payment_method=method,
+                )
+                messages.success(request, f'Payment request created. Control number: {control_number}')
+                return redirect('payments')
+            except ValueError:
+                messages.error(request, 'Enter a valid payment amount.')
     payments = Payment.objects.filter(taxpayer=taxpayer).order_by('-created_at') if taxpayer else Payment.objects.none()
     return render(request, 'payments.html', {'payments': payments})
 
@@ -186,8 +218,34 @@ def profile_view(request):
     taxpayer = Taxpayer.objects.filter(tin_number=request.user.username).first()
     profile, _ = UserProfile.objects.get_or_create(user=request.user)
     if request.method == 'POST' and request.FILES.get('photo'):
-        profile.photo = request.FILES['photo']
-        profile.save()
-        messages.success(request, 'Profile photo updated.')
+        photo = request.FILES['photo']
+        allowed_types = {'image/jpeg', 'image/png', 'image/webp'}
+        if photo.content_type not in allowed_types or photo.size > 2 * 1024 * 1024:
+            messages.error(request, 'Upload a JPG, PNG, or WebP image smaller than 2 MB.')
+        else:
+            profile.photo = photo
+            profile.save()
+            messages.success(request, 'Profile photo updated.')
         return redirect('profile')
     return render(request, 'profile.html', {'taxpayer': taxpayer, 'profile': profile})
+
+
+@login_required(login_url='/')
+def change_password_view(request):
+    if request.method == 'POST':
+        current = request.POST.get('current_password', '')
+        new_password = request.POST.get('new_password', '')
+        confirmation = request.POST.get('confirm_password', '')
+        if not request.user.check_password(current):
+            messages.error(request, 'Current password is incorrect.')
+        elif len(new_password) < 8:
+            messages.error(request, 'New password must be at least 8 characters.')
+        elif new_password != confirmation:
+            messages.error(request, 'New passwords do not match.')
+        else:
+            request.user.set_password(new_password)
+            request.user.save(update_fields=['password'])
+            update_session_auth_hash(request, request.user)
+            messages.success(request, 'Password changed successfully.')
+            return redirect('profile')
+    return render(request, 'change_password.html')
