@@ -22,13 +22,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-if __name__ == "__main__":
-    bind_host, bind_port = parse_bind_arg(sys.argv[1:])
-    if bind_host is None:
-        raise SystemExit("Invalid runserver arguments")
-    if len(sys.argv) > 1 and "--noreload" in sys.argv:
-        run_server(bind_host, bind_port, use_reloader=False)
-    else:
-        run_with_reloader(lambda: run_server(bind_host, bind_port))

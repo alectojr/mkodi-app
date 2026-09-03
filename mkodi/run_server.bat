@@ -1,3 +1,3 @@
 @echo off
 cd /d "%~dp0"
-python run.py
+python manage.py runserver 3000

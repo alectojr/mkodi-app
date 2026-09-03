@@ -8,3 +8,8 @@
         <a href="{% url 'logout' %}">Logout</a>
     </div>
 </nav>
+
+<div class="dashboard-hero card">
+    <h2>Welcome back, {{ request.user.first_name|default:request.user.username }}</h2>
+    <p>MKodi gives you a unified experience for tax compliance, payment intelligence, and real-time insights.</p>
+</div>
