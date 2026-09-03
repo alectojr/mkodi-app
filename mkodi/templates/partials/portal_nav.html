@@ -14,7 +14,7 @@
         <a class="{% if request.resolver_match.url_name == 'intelligence' %}is-active{% endif %}" href="{% url 'intelligence' %}"><span class="menu-icon">◈</span>360° View</a>
         <a class="{% if request.resolver_match.url_name == 'payments' %}is-active{% endif %}" href="{% url 'payments' %}"><span class="menu-icon">▣</span>Payments</a>
         <a class="{% if request.resolver_match.url_name == 'profile' %}is-active{% endif %}" href="{% url 'profile' %}"><span class="menu-icon">♙</span>Profile</a>
-        <a href="{% url 'home' %}#support"><span class="menu-icon">?</span>Support</a>
+        <a href="{% url 'support' %}"><span class="menu-icon">?</span>Support</a>
     </nav>
     <a class="sidebar-logout" href="{% url 'logout' %}"><span class="menu-icon">↪</span>Logout</a>
 </aside>

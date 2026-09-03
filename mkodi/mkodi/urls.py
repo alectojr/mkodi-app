@@ -9,7 +9,7 @@ from taxpayers.views import taxpayer_lookup, register_taxpayer, account_lookup
 from ussd.views import ussd_handler
 from payments.views import generate_control_number, initiate_stk_push
 from integrations.views import brela_lookup, land_lookup, full_360_view
-from core.views import signup_view, login_view, logout_view, home_view, forgot_password_view, intelligence_view, payments_view, profile_view, change_password_view, payment_receipt_view
+from core.views import signup_view, login_view, logout_view, home_view, forgot_password_view, intelligence_view, payments_view, profile_view, change_password_view, payment_receipt_view, payment_receipt_pdf_view, public_info_view
 
 urlpatterns = [
     path('', login_view, name='login'),           # First page is Login
@@ -21,7 +21,12 @@ urlpatterns = [
     path('profile/', profile_view, name='profile'),
     path('change-password/', change_password_view, name='change_password'),
     path('payments/<int:payment_id>/receipt/', payment_receipt_view, name='payment_receipt'),
+    path('payments/<int:payment_id>/receipt.pdf', payment_receipt_pdf_view, name='payment_receipt_pdf'),
     path('logout/', logout_view, name='logout'),
+    path('support/', lambda request: public_info_view(request, 'support'), name='support'),
+    path('privacy/', lambda request: public_info_view(request, 'privacy'), name='privacy'),
+    path('terms/', lambda request: public_info_view(request, 'terms'), name='terms'),
+    path('status/', lambda request: public_info_view(request, 'status'), name='status'),
 
     path('admin/', admin.site.urls),
 

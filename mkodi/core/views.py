@@ -7,6 +7,11 @@ from django.contrib.auth.decorators import login_required
 from taxpayers.models import Taxpayer
 from payments.models import Payment
 from .models import UserProfile
+from django.http import HttpResponse
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import mm
+from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 
 def sync_taxpayer_from_signup(tin, full_name, phone, email):
@@ -180,6 +185,31 @@ def payment_receipt_view(request, payment_id):
 
 
 @login_required(login_url='/')
+def payment_receipt_pdf_view(request, payment_id):
+    taxpayer = Taxpayer.objects.filter(tin_number=request.user.username).first()
+    payment = Payment.objects.filter(id=payment_id, taxpayer=taxpayer).first()
+    if payment is None:
+        messages.error(request, 'Payment receipt not found.')
+        return redirect('payments')
+
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="mkodi-receipt-{payment.control_number}.pdf"'
+    document = SimpleDocTemplate(response, pagesize=A4, rightMargin=20 * mm, leftMargin=20 * mm, topMargin=20 * mm, bottomMargin=20 * mm)
+    styles = getSampleStyleSheet()
+    content = [Paragraph('MKODI TAXPAYER SERVICES', styles['Title']), Spacer(1, 8 * mm)]
+    rows = [
+        ['Taxpayer', payment.taxpayer.full_name], ['TIN', payment.taxpayer.tin_number],
+        ['Amount', f'TZS {payment.amount}'], ['Method', payment.payment_method.title()],
+        ['Control number', payment.control_number], ['Transaction ID', payment.transaction_id or 'Pending'],
+        ['Status', payment.status.title()], ['Created', payment.created_at.strftime('%d %b %Y, %H:%M')],
+    ]
+    table = Table(rows, colWidths=[45 * mm, 115 * mm])
+    table.setStyle(TableStyle([('BACKGROUND', (0, 0), (0, -1), '#e8efff'), ('TEXTCOLOR', (0, 0), (-1, -1), '#17234d'), ('GRID', (0, 0), (-1, -1), .5, '#dfe5f0'), ('PADDING', (0, 0), (-1, -1), 8)]))
+    document.build(content + [table])
+    return response
+
+
+@login_required(login_url='/')
 def intelligence_view(request):
     taxpayer = Taxpayer.objects.filter(tin_number=request.user.username).first()
     return render(request, 'intelligence.html', {'taxpayer': taxpayer, 'user_tin': request.user.username})
@@ -210,6 +240,12 @@ def payments_view(request):
             except ValueError:
                 messages.error(request, 'Enter a valid payment amount.')
     payments = Payment.objects.filter(taxpayer=taxpayer).order_by('-created_at') if taxpayer else Payment.objects.none()
+    method = request.GET.get('method', '').strip()
+    status = request.GET.get('status', '').strip()
+    if method:
+        payments = payments.filter(payment_method=method)
+    if status:
+        payments = payments.filter(status=status)
     return render(request, 'payments.html', {'payments': payments})
 
 
@@ -249,3 +285,14 @@ def change_password_view(request):
             messages.success(request, 'Password changed successfully.')
             return redirect('profile')
     return render(request, 'change_password.html')
+
+
+def public_info_view(request, page):
+    pages = {
+        'support': ('Support', 'For support, contact the MKodi taxpayer services team through your approved TRA support channel.'),
+        'privacy': ('Privacy Policy', 'MKodi uses taxpayer information only to provide authorized revenue services. Production deployments must apply official data-protection controls.'),
+        'terms': ('Terms of Service', 'Use MKodi only with accurate information and an authorized taxpayer account. Payment integrations are subject to official provider terms.'),
+        'status': ('System Status', 'Portal services are available. Government and payment integrations are currently in demonstration mode.'),
+    }
+    title, content = pages[page]
+    return render(request, 'public_info.html', {'title': title, 'content': content})

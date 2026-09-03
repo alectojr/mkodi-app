@@ -18,5 +18,7 @@ def admin_metrics(request):
             'pending_payments': Payment.objects.filter(status='pending').count(),
             'average_compliance': Taxpayer.objects.aggregate(score=Avg('tax_compliance_score'))['score'] or 0,
             'users': get_user_model().objects.count(),
+            'completed_payments': Payment.objects.filter(status='completed').count(),
+            'failed_payments': Payment.objects.filter(status='failed').count(),
         }
     }

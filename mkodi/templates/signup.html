@@ -4,110 +4,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MKodi - Create Account</title>
+    <title>MKodi - Register</title>
     <link rel="stylesheet" href="{% static 'css/mkodi-style.css' %}">
 </head>
-<body class="page-shell">
-    <div class="page-content">
-        <div class="form-shell">
-            <div class="form-header">
-                <h1>MKodi</h1>
-                <p>Join the future of integrated revenue intelligence in Tanzania</p>
+<body class="login-page signup-page">
+    <header class="login-header">
+        <img src="{% static 'images/mkodi-logo.svg' %}" alt="MKodi logo" class="login-logo">
+        <div class="login-header-copy">
+            <strong>THE UNITED REPUBLIC OF TANZANIA</strong>
+            <span>MKODI TAXPAYER SERVICES PORTAL</span>
+        </div>
+        <div class="login-header-badge">Revenue<br>Services</div>
+    </header>
+
+    <main>
+        <section class="login-hero" aria-label="MKodi taxpayer services">
+            <div class="hero-slides">
+                <img class="hero-slide is-visible" src="{% static 'images/taxpayer-shop.svg' %}" alt="Small business taxpayer shop">
+                <img class="hero-slide" src="{% static 'images/taxpayer-market.svg' %}" alt="Taxpayer businesses in a market">
+                <img class="hero-slide" src="{% static 'images/taxpayer-mobile.svg' %}" alt="Taxpayer using mobile services">
+                <img class="hero-slide" src="{% static 'images/taxpayer-records.svg' %}" alt="Digital taxpayer records">
+                <img class="hero-slide" src="{% static 'images/taxpayer-payment.svg' %}" alt="Taxpayer payment services">
             </div>
-            <div class="form-body">
-                {% if messages %}
-                <div style="margin-bottom: 24px; padding: 18px; background: #fff1f2; border: 1px solid #fecdd3; color: #b91c1c; border-radius: 18px;">
-                    {% for message in messages %}
-                    <p>{{ message }}</p>
-                    {% endfor %}
-                </div>
-                {% endif %}
+            <div class="hero-overlay"></div>
+            <div class="hero-copy">
+                <p class="eyebrow">Join the taxpayer community</p>
+                <h1>Start with a simpler way to manage tax.</h1>
+                <p>Create your secure MKodi account using the TIN already registered in the admin taxpayer records.</p>
+            </div>
+            <div class="slide-dots" aria-label="Slideshow controls">
+                <button class="slide-dot is-active" type="button" aria-label="Show slide 1"></button>
+                <button class="slide-dot" type="button" aria-label="Show slide 2"></button>
+                <button class="slide-dot" type="button" aria-label="Show slide 3"></button>
+                <button class="slide-dot" type="button" aria-label="Show slide 4"></button>
+                <button class="slide-dot" type="button" aria-label="Show slide 5"></button>
+            </div>
+        </section>
+
+        <section class="login-panel-wrap signup-panel-wrap">
+            <div class="login-switcher" role="tablist" aria-label="Account actions">
+                <a href="{% url 'login' %}">Login</a>
+                <span class="is-current">Register <span aria-hidden="true">⌄</span></span>
+            </div>
+            <div class="login-panel signup-panel">
+                <div class="login-panel-heading"><p class="eyebrow">Create your account</p><h2>Register with your TIN</h2><p>Your taxpayer details will be loaded from the official record.</p></div>
+                {% if messages %}<div class="login-messages">{% for message in messages %}<p>{{ message }}</p>{% endfor %}</div>{% endif %}
                 <form id="signupForm" method="POST" novalidate>
                     {% csrf_token %}
-                    <div>
-                        <label for="tin_number">TIN Number *</label>
-                        <input type="text" id="tin_number" name="tin_number" maxlength="20" placeholder="Enter your TIN" required>
+                    <label for="tin_number">TIN Number</label>
+                    <div class="lookup-row"><input type="text" id="tin_number" name="tin_number" maxlength="20" placeholder="Enter your TIN" required><button type="button" id="lookupButton" class="lookup-button">Load details</button></div>
+                    <div id="taxpayerDetails" class="signup-details" hidden>
+                        <p><strong>Full name</strong><span data-field="full_name"></span></p><p><strong>Phone</strong><span data-field="phone_number"></span></p><p><strong>Email</strong><span data-field="email"></span></p><p><strong>Business</strong><span data-field="business_name"></span></p><p><strong>BRELA number</strong><span data-field="brela_number"></span></p><p><strong>Land parcel</strong><span data-field="land_parcel"></span></p><p><strong>Compliance</strong><span data-field="tax_compliance_score"></span>%</p><p><strong>Credit score</strong><span data-field="credit_score"></span></p>
                     </div>
-                    <button type="button" class="btn-secondary" id="lookupButton">Load my taxpayer details</button>
-                    <div id="taxpayerDetails" hidden style="margin: 20px 0; padding: 18px; background: #f8fafc; border: 1px solid #dbeafe; border-radius: 12px;">
-                        <p><strong>Full name:</strong> <span data-field="full_name"></span></p>
-                        <p><strong>Phone:</strong> <span data-field="phone_number"></span></p>
-                        <p><strong>Email:</strong> <span data-field="email"></span></p>
-                        <p><strong>Business:</strong> <span data-field="business_name"></span></p>
-                        <p><strong>BRELA number:</strong> <span data-field="brela_number"></span></p>
-                        <p><strong>Land parcel:</strong> <span data-field="land_parcel"></span></p>
-                        <p><strong>Estimated income:</strong> TZS <span data-field="estimated_income"></span></p>
-                        <p><strong>Tax compliance:</strong> <span data-field="tax_compliance_score"></span>%</p>
-                        <p><strong>Credit score:</strong> <span data-field="credit_score"></span></p>
-                    </div>
-                    <div>
-                        <label for="password">Password *</label>
-                        <input type="password" id="password" name="password" placeholder="Create a strong password" required>
-                        <p style="font-size: 0.9rem; color: #64748b; margin-top: 8px;">Minimum 8 characters</p>
-                    </div>
-                    <div>
-                        <label for="password_confirm">Confirm Password *</label>
-                        <input type="password" id="password_confirm" name="password_confirm" placeholder="Confirm your password" required>
-                    </div>
-                    <button type="submit" class="btn-primary">Create My MKodi Account</button>
+                    <label for="password">Password</label><input type="password" id="password" name="password" minlength="8" placeholder="Create a password" required>
+                    <label for="password_confirm">Confirm password</label><input type="password" id="password_confirm" name="password_confirm" minlength="8" placeholder="Repeat your password" required>
+                    <button type="submit" class="login-submit">Create MKodi account <span aria-hidden="true">→</span></button>
                 </form>
-                <div style="margin-top: 24px; text-align: center; color: #475569; font-size: 0.95rem;">
-                    Already have an account? <a href="/" style="color: #2563eb; text-decoration: none;">Login here</a>
-                </div>
+                <div class="login-links"><a href="{% url 'login' %}">Back to login</a><a href="{% url 'forgot_password' %}">Forgot password?</a></div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
+
+    <footer class="login-footer">
+        <div><strong>ABOUT MKODI</strong><p>Digital taxpayer services that make compliance clearer, faster, and more accessible.</p></div>
+        <div><strong>IMPORTANT LINKS</strong><a href="{% url 'login' %}">Login</a><a href="{% url 'forgot_password' %}">Recover password</a></div>
+        <div><strong>CONTACT</strong><p>Taxpayer support<br>United Republic of Tanzania</p></div>
+        <small>© 2026 MKodi. All rights reserved.</small>
+    </footer>
+
     <script>
-        document.getElementById('signupForm').addEventListener('submit', function(e) {
-            const tinNumber = document.getElementById('tin_number').value.trim();
+        const slides = [...document.querySelectorAll('.hero-slide')];
+        const dots = [...document.querySelectorAll('.slide-dot')];
+        let activeSlide = 0;
+        function showSlide(index) { activeSlide = index; slides.forEach((slide, position) => slide.classList.toggle('is-visible', position === index)); dots.forEach((dot, position) => dot.classList.toggle('is-active', position === index)); }
+        dots.forEach((dot, index) => dot.addEventListener('click', () => showSlide(index)));
+        setInterval(() => showSlide((activeSlide + 1) % slides.length), 6000);
+
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            const tin = document.getElementById('tin_number').value.trim();
             const password = document.getElementById('password').value;
-            const passwordConfirm = document.getElementById('password_confirm').value;
-
-            if (!tinNumber) {
-                e.preventDefault();
-                alert("Please enter your TIN number");
-                return;
-            }
-            if (!password) {
-                e.preventDefault();
-                alert("Please enter a password");
-                return;
-            }
-            if (password.length < 8) {
-                e.preventDefault();
-                alert("Password must be at least 8 characters long");
-                return;
-            }
-            if (password !== passwordConfirm) {
-                e.preventDefault();
-                alert("Passwords do not match");
-                return;
-            }
+            const confirmation = document.getElementById('password_confirm').value;
+            if (!tin || password.length < 8 || password !== confirmation) { event.preventDefault(); alert(!tin ? 'Enter your TIN.' : password.length < 8 ? 'Password must be at least 8 characters.' : 'Passwords do not match.'); }
         });
-
         document.getElementById('lookupButton').addEventListener('click', function() {
             const tin = document.getElementById('tin_number').value.trim();
             const details = document.getElementById('taxpayerDetails');
-            if (!tin) {
-                alert('Enter your TIN first');
-                return;
-            }
-
-            fetch(`/api/account-lookup/${encodeURIComponent(tin)}/`)
-                .then(response => response.json().then(data => ({ ok: response.ok, data })))
-                .then(result => {
-                    if (!result.ok) {
-                        details.hidden = true;
-                        alert(result.data.error || 'Taxpayer record not found');
-                        return;
-                    }
-                    Object.entries(result.data).forEach(([field, value]) => {
-                        const element = details.querySelector(`[data-field="${field}"]`);
-                        if (element) element.textContent = value || 'Not provided';
-                    });
-                    details.hidden = false;
-                })
-                .catch(() => alert('Unable to load taxpayer details'));
+            if (!tin) { alert('Enter your TIN first.'); return; }
+            fetch(`/api/account-lookup/${encodeURIComponent(tin)}/`).then(response => response.json().then(data => ({ ok: response.ok, data }))).then(result => {
+                if (!result.ok) { details.hidden = true; alert(result.data.error || 'Taxpayer record not found.'); return; }
+                Object.entries(result.data).forEach(([field, value]) => { const element = details.querySelector(`[data-field="${field}"]`); if (element) element.textContent = value || 'Not provided'; });
+                details.hidden = false;
+            }).catch(() => alert('Unable to load taxpayer details.'));
         });
     </script>
 </body>

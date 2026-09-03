@@ -23,6 +23,8 @@
     </div>
 
     <div class="dashboard-panel" style="margin-top: 24px;">
+        <h3>Payment overview</h3>
+        <div class="admin-bars"><div><span>Completed</span><strong style="width: {% widthratio admin_metrics.completed_payments admin_metrics.payments 100 %}%"></strong></div><div><span>Pending</span><strong style="width: {% widthratio admin_metrics.pending_payments admin_metrics.payments 100 %}%"></strong></div><div><span>Failed</span><strong style="width: {% widthratio admin_metrics.failed_payments admin_metrics.payments 100 %}%"></strong></div></div>
         <h3>Quick actions</h3>
         <ul style="margin-top: 16px; gap: 12px; display: grid;">
             {% if app_list|length > 0 %}

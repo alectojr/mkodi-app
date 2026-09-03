@@ -31,6 +31,13 @@
                 <button class="btn-primary" type="submit">Create payment request</button>
             </form>
         </section>
+        <form class="payment-filters card" method="get">
+            <label for="method">Method</label>
+            <select id="method" name="method"><option value="">All methods</option><option value="ussd" {% if request.GET.method == 'ussd' %}selected{% endif %}>USSD</option><option value="gepg" {% if request.GET.method == 'gepg' %}selected{% endif %}>GePG</option><option value="mobile_money" {% if request.GET.method == 'mobile_money' %}selected{% endif %}>Mobile money</option></select>
+            <label for="status">Status</label>
+            <select id="status" name="status"><option value="">All statuses</option><option value="pending" {% if request.GET.status == 'pending' %}selected{% endif %}>Pending</option><option value="completed" {% if request.GET.status == 'completed' %}selected{% endif %}>Completed</option><option value="failed" {% if request.GET.status == 'failed' %}selected{% endif %}>Failed</option></select>
+            <button class="btn-primary" type="submit">Filter payments</button>
+        </form>
         <section class="payment-table-wrap">
             {% if payments %}
             <div class="payment-table-scroll"><table class="payment-table">
@@ -41,7 +48,7 @@
                     <td>{{ payment.control_number }}</td>
                     <td>{{ payment.transaction_id|default:'Pending' }}</td>
                     <td>TZS {{ payment.amount }}</td>
-                    <td><span class="status status-{{ payment.status }}">{{ payment.status|title }}</span> <a href="{% url 'payment_receipt' payment.id %}">Receipt</a></td>
+                    <td><span class="status status-{{ payment.status }}">{{ payment.status|title }}</span> <a href="{% url 'payment_receipt' payment.id %}">Receipt</a> <a href="{% url 'payment_receipt_pdf' payment.id %}">PDF</a></td>
                 </tr>{% endfor %}</tbody>
             </table></div>
             {% else %}<div class="empty-state"><h2>No payments yet</h2><p>Your completed and pending payments will appear here.</p></div>{% endif %}
