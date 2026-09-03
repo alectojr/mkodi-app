@@ -25,20 +25,20 @@
                 <form id="signupForm" method="POST" novalidate>
                     {% csrf_token %}
                     <div>
-                        <label for="full_name">Full Name *</label>
-                        <input type="text" id="full_name" name="full_name" placeholder="Enter your full name" required>
-                    </div>
-                    <div>
                         <label for="tin_number">TIN Number *</label>
                         <input type="text" id="tin_number" name="tin_number" maxlength="20" placeholder="Enter your TIN" required>
                     </div>
-                    <div>
-                        <label for="phone_number">Phone Number *</label>
-                        <input type="tel" id="phone_number" name="phone_number" placeholder="255712345678" required>
-                    </div>
-                    <div>
-                        <label for="email">Email Address (Optional)</label>
-                        <input type="email" id="email" name="email" placeholder="yourname@example.com">
+                    <button type="button" class="btn-secondary" id="lookupButton">Load my taxpayer details</button>
+                    <div id="taxpayerDetails" hidden style="margin: 20px 0; padding: 18px; background: #f8fafc; border: 1px solid #dbeafe; border-radius: 12px;">
+                        <p><strong>Full name:</strong> <span data-field="full_name"></span></p>
+                        <p><strong>Phone:</strong> <span data-field="phone_number"></span></p>
+                        <p><strong>Email:</strong> <span data-field="email"></span></p>
+                        <p><strong>Business:</strong> <span data-field="business_name"></span></p>
+                        <p><strong>BRELA number:</strong> <span data-field="brela_number"></span></p>
+                        <p><strong>Land parcel:</strong> <span data-field="land_parcel"></span></p>
+                        <p><strong>Estimated income:</strong> TZS <span data-field="estimated_income"></span></p>
+                        <p><strong>Tax compliance:</strong> <span data-field="tax_compliance_score"></span>%</p>
+                        <p><strong>Credit score:</strong> <span data-field="credit_score"></span></p>
                     </div>
                     <div>
                         <label for="password">Password *</label>
@@ -59,25 +59,13 @@
     </div>
     <script>
         document.getElementById('signupForm').addEventListener('submit', function(e) {
-            const fullName = document.getElementById('full_name').value.trim();
             const tinNumber = document.getElementById('tin_number').value.trim();
-            const phoneNumber = document.getElementById('phone_number').value.trim();
             const password = document.getElementById('password').value;
             const passwordConfirm = document.getElementById('password_confirm').value;
 
-            if (!fullName) {
-                e.preventDefault();
-                alert("Please enter your full name");
-                return;
-            }
             if (!tinNumber) {
                 e.preventDefault();
                 alert("Please enter your TIN number");
-                return;
-            }
-            if (!phoneNumber) {
-                e.preventDefault();
-                alert("Please enter your phone number");
                 return;
             }
             if (!password) {
@@ -95,6 +83,31 @@
                 alert("Passwords do not match");
                 return;
             }
+        });
+
+        document.getElementById('lookupButton').addEventListener('click', function() {
+            const tin = document.getElementById('tin_number').value.trim();
+            const details = document.getElementById('taxpayerDetails');
+            if (!tin) {
+                alert('Enter your TIN first');
+                return;
+            }
+
+            fetch(`/api/account-lookup/${encodeURIComponent(tin)}/`)
+                .then(response => response.json().then(data => ({ ok: response.ok, data })))
+                .then(result => {
+                    if (!result.ok) {
+                        details.hidden = true;
+                        alert(result.data.error || 'Taxpayer record not found');
+                        return;
+                    }
+                    Object.entries(result.data).forEach(([field, value]) => {
+                        const element = details.querySelector(`[data-field="${field}"]`);
+                        if (element) element.textContent = value || 'Not provided';
+                    });
+                    details.hidden = false;
+                })
+                .catch(() => alert('Unable to load taxpayer details'));
         });
     </script>
 </body>

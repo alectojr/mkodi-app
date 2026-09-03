@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from taxpayers.models import Taxpayer
+from payments.models import Payment
+from .models import UserProfile
 
 
 def sync_taxpayer_from_signup(tin, full_name, phone, email):
@@ -62,18 +64,20 @@ def sync_user_from_taxpayer(user):
 def signup_view(request):
     if request.method == 'POST':
         tin = request.POST.get('tin_number', '').strip()
-        full_name = request.POST.get('full_name', '').strip()
-        phone = request.POST.get('phone_number', '').strip()
-        email = request.POST.get('email', '').strip()
         password = request.POST.get('password', '')
+        password_confirm = request.POST.get('password_confirm', '')
 
         # Validation
-        if not tin or not full_name or not phone or not password:
-            messages.error(request, "All fields are required")
+        if not tin or not password or not password_confirm:
+            messages.error(request, "TIN, password, and password confirmation are required")
             return redirect('signup')
 
         if len(password) < 8:
             messages.error(request, "Password must be at least 8 characters")
+            return redirect('signup')
+
+        if password != password_confirm:
+            messages.error(request, "Passwords do not match")
             return redirect('signup')
 
         if User.objects.filter(username=tin).exists():
@@ -81,16 +85,19 @@ def signup_view(request):
             return redirect('signup')
 
         try:
+            taxpayer = Taxpayer.objects.get(tin_number=tin, is_active=True)
             user = User.objects.create_user(
                 username=tin,
                 password=password,
-                email=email if email else None,
-                first_name=full_name
+                email=taxpayer.email or '',
+                first_name=taxpayer.full_name,
             )
-            sync_taxpayer_from_signup(tin, full_name, phone, email)
             sync_user_from_taxpayer(user)
             login(request, user)
             return redirect('home')
+        except Taxpayer.DoesNotExist:
+            messages.error(request, "This TIN is not available in the admin taxpayer records")
+            return redirect('signup')
         except Exception as ex:
             messages.error(request, f"Error creating account: {str(ex)}")
             return redirect('signup')
@@ -151,9 +158,36 @@ def logout_view(request):
 @login_required(login_url='/')
 def home_view(request):
     user = request.user
+    taxpayer = Taxpayer.objects.filter(tin_number=user.username).first()
     context = {
         'user_tin': user.username,
-        'user_name': user.first_name or user.username,
-        'user_email': user.email,
+        'user_name': taxpayer.full_name if taxpayer else user.first_name or user.username,
+        'user_email': taxpayer.email if taxpayer else user.email,
+        'taxpayer': taxpayer,
     }
     return render(request, 'index.html', context)
+
+
+@login_required(login_url='/')
+def intelligence_view(request):
+    taxpayer = Taxpayer.objects.filter(tin_number=request.user.username).first()
+    return render(request, 'intelligence.html', {'taxpayer': taxpayer, 'user_tin': request.user.username})
+
+
+@login_required(login_url='/')
+def payments_view(request):
+    taxpayer = Taxpayer.objects.filter(tin_number=request.user.username).first()
+    payments = Payment.objects.filter(taxpayer=taxpayer).order_by('-created_at') if taxpayer else Payment.objects.none()
+    return render(request, 'payments.html', {'payments': payments})
+
+
+@login_required(login_url='/')
+def profile_view(request):
+    taxpayer = Taxpayer.objects.filter(tin_number=request.user.username).first()
+    profile, _ = UserProfile.objects.get_or_create(user=request.user)
+    if request.method == 'POST' and request.FILES.get('photo'):
+        profile.photo = request.FILES['photo']
+        profile.save()
+        messages.success(request, 'Profile photo updated.')
+        return redirect('profile')
+    return render(request, 'profile.html', {'taxpayer': taxpayer, 'profile': profile})

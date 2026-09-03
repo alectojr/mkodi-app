@@ -61,7 +61,8 @@ def full_360_view(request, nida_number):
         except Taxpayer.DoesNotExist:
             taxpayer = Taxpayer.objects.get(nida_number=nida_number)
 
-        # Try to get BRELA and Land data
+        # Use dedicated integration records when available, with the admin-entered
+        # taxpayer fields as the fallback source of truth.
         brela_data = None
         try:
             brela = BrelaRecord.objects.get(taxpayer=taxpayer)
@@ -70,8 +71,13 @@ def full_360_view(request, nida_number):
                 "business_name": brela.business_name,
                 "assets_value": str(brela.assets_value)
             }
-        except:
-            brela_data = None
+        except BrelaRecord.DoesNotExist:
+            if taxpayer.brela_number or taxpayer.business_name:
+                brela_data = {
+                    "brela_number": taxpayer.brela_number or "Not provided",
+                    "business_name": taxpayer.business_name or "Not provided",
+                    "assets_value": "0",
+                }
 
         land_data = None
         try:
@@ -81,8 +87,21 @@ def full_360_view(request, nida_number):
                     "total_properties": lands.count(),
                     "total_value": str(sum(land.estimated_value for land in lands))
                 }
-        except:
+        except Exception:
             land_data = None
+
+        if land_data is None and taxpayer.land_parcel:
+            land_data = {
+                "total_properties": 1,
+                "total_value": "0",
+                "properties": [{
+                    "parcel_number": taxpayer.land_parcel,
+                    "location": "Admin record",
+                    "size_acres": "0",
+                    "estimated_value": "0",
+                    "ownership_type": "Admin record",
+                }],
+            }
 
         return JsonResponse({
             "success": True,
@@ -91,6 +110,10 @@ def full_360_view(request, nida_number):
                 "nida": taxpayer.nida_number,
                 "name": taxpayer.full_name,
                 "phone": taxpayer.phone_number,
+                "email": taxpayer.email or "",
+                "business_name": taxpayer.business_name or "",
+                "brela_number": taxpayer.brela_number or "",
+                "land_parcel": taxpayer.land_parcel or "",
                 "estimated_income": str(taxpayer.estimated_income),
                 "tax_compliance_score": taxpayer.tax_compliance_score,
                 "credit_score": taxpayer.credit_score,

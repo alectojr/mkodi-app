@@ -1,0 +1,28 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKodi - Profile</title>
+    <link rel="stylesheet" href="{% static 'css/mkodi-style.css' %}">
+</head>
+<body class="page-shell">
+    <main class="page-content">
+        {% include 'partials/portal_nav.html' %}
+        <section class="profile-header card">
+            <div class="profile-photo-wrap">
+                {% if profile.photo %}<img src="{{ profile.photo.url }}" alt="Profile photo">{% else %}<span>{{ taxpayer.full_name|default:user.username|first|upper }}</span>{% endif %}
+            </div>
+            <div><p class="eyebrow">Account profile</p><h1>{{ taxpayer.full_name|default:user.username }}</h1><p>TIN {{ user.username }}</p></div>
+            <form class="photo-form" method="post" enctype="multipart/form-data">{% csrf_token %}<label for="photo">Add photo</label><input id="photo" type="file" name="photo" accept="image/*" required><button class="btn-primary" type="submit">Upload photo</button></form>
+        </section>
+        <section class="profile-details card">
+            <h2>All user details</h2>
+            {% if taxpayer %}<div class="profile-fields">
+                <p><strong>Full name</strong><span>{{ taxpayer.full_name }}</span></p><p><strong>TIN</strong><span>{{ taxpayer.tin_number }}</span></p><p><strong>NIDA</strong><span>{{ taxpayer.nida_number }}</span></p><p><strong>Phone</strong><span>{{ taxpayer.phone_number }}</span></p><p><strong>Email</strong><span>{{ taxpayer.email|default:'Not provided' }}</span></p><p><strong>Business</strong><span>{{ taxpayer.business_name|default:'Not provided' }}</span></p><p><strong>BRELA number</strong><span>{{ taxpayer.brela_number|default:'Not provided' }}</span></p><p><strong>Land parcel</strong><span>{{ taxpayer.land_parcel|default:'Not provided' }}</span></p><p><strong>Estimated income</strong><span>TZS {{ taxpayer.estimated_income }}</span></p><p><strong>Tax compliance</strong><span>{{ taxpayer.tax_compliance_score }}%</span></p><p><strong>Credit score</strong><span>{{ taxpayer.credit_score }}</span></p><p><strong>Account status</strong><span>{% if taxpayer.is_active %}Active{% else %}Inactive{% endif %}</span></p>
+            </div>{% else %}<div class="empty-state">No taxpayer details are linked to this account.</div>{% endif %}
+        </section>
+    </main>
+</body>
+</html>

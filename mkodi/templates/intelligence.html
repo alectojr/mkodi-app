@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MKodi - 360° View</title>
+    <link rel="stylesheet" href="{% static 'css/mkodi-style.css' %}">
+</head>
+<body class="page-shell">
+    <main class="page-content">
+        {% include 'partials/portal_nav.html' %}
+        <section class="page-heading">
+            <p class="eyebrow">Personal intelligence</p>
+            <h1>360° Revenue Intelligence View</h1>
+            <p>One complete view of the taxpayer record connected to TIN {{ user_tin }}.</p>
+        </section>
+        {% if taxpayer %}
+        <div class="detail-grid">
+            <section class="detail-card detail-card-blue">
+                <h2>Personal Information</h2>
+                <p><strong>Full name</strong><span>{{ taxpayer.full_name }}</span></p>
+                <p><strong>TIN</strong><span>{{ taxpayer.tin_number }}</span></p>
+                <p><strong>NIDA</strong><span>{{ taxpayer.nida_number }}</span></p>
+                <p><strong>Phone</strong><span>{{ taxpayer.phone_number }}</span></p>
+                <p><strong>Email</strong><span>{{ taxpayer.email|default:'Not provided' }}</span></p>
+            </section>
+            <section class="detail-card detail-card-green">
+                <h2>🏢 BRELA Business Data</h2>
+                <p><strong>Business</strong><span>{{ taxpayer.business_name|default:'Not provided' }}</span></p>
+                <p><strong>BRELA No</strong><span>{{ taxpayer.brela_number|default:'Not provided' }}</span></p>
+                <p><strong>Assets Value</strong><span>TZS {{ taxpayer.estimated_income|default:'0' }}</span></p>
+            </section>
+            <section class="detail-card detail-card-amber">
+                <h2>🏡 Land & Property</h2>
+                <p><strong>Land parcel</strong><span>{{ taxpayer.land_parcel|default:'No land records found' }}</span></p>
+            </section>
+            <section class="detail-card detail-card-purple">
+                <h2>📊 TRA Intelligence</h2>
+                <p><strong>Estimated income</strong><span>TZS {{ taxpayer.estimated_income }}</span></p>
+                <p><strong>Compliance score</strong><span>{{ taxpayer.tax_compliance_score }}%</span></p>
+                <p><strong>Credit score</strong><span>{{ taxpayer.credit_score }}</span></p>
+                <p><strong>Risk level</strong><span>{% if taxpayer.estimated_income > 20000000 %}High{% else %}Medium{% endif %}</span></p>
+                <p><strong>Assessment</strong><span>{% if taxpayer.tax_compliance_score < 60 %}Recommend detailed audit{% else %}Low risk taxpayer{% endif %}</span></p>
+            </section>
+        </div>
+        {% else %}
+        <section class="empty-state">No taxpayer record is linked to this account.</section>
+        {% endif %}
+    </main>
+</body>
+</html>

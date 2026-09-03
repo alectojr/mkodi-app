@@ -3,7 +3,9 @@ import random
 import string
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.utils import timezone
 from taxpayers.models import Taxpayer
+from .models import Payment
 
 @csrf_exempt
 def generate_control_number(request):
@@ -19,6 +21,12 @@ def generate_control_number(request):
         try:
             taxpayer = Taxpayer.objects.get(nida_number=nida)
             control_number = "99" + ''.join(random.choices(string.digits, k=10))
+            Payment.objects.create(
+                taxpayer=taxpayer,
+                control_number=control_number,
+                amount=amount or 0,
+                payment_method=data.get('payment_method', 'GePG'),
+            )
 
             return JsonResponse({
                 "success": True,
@@ -50,6 +58,12 @@ def initiate_stk_push(request):
             return JsonResponse({"success": False, "error": "Missing required fields"}, status=400)
 
         transaction_id = "TX" + ''.join(random.choices(string.digits, k=12))
+        payment = Payment.objects.filter(control_number=control_number).first()
+        if payment:
+            payment.transaction_id = transaction_id
+            payment.status = 'completed'
+            payment.paid_at = timezone.now()
+            payment.save(update_fields=['transaction_id', 'status', 'paid_at'])
 
         return JsonResponse({
             "success": True,

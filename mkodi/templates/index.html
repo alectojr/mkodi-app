@@ -10,15 +10,13 @@
 <body class="page-shell">
     <div class="page-content">
         <div class="navbar" style="margin-bottom: 26px;">
-            <div class="brand">
-                <h1>MKodi <span>Portal</span></h1>
-            </div>
+            <a class="brand" href="{% url 'home' %}">MKodi <span>Portal</span></a>
             <div class="nav-links">
-                <button onclick="showSection('feed')">Home</button>
-                <button onclick="showSection('360')">360° View</button>
-                <button onclick="showSection('payments')">Payments</button>
-                <button onclick="showSection('details')">Profile</button>
-                <button onclick="window.location.href='/logout/'">Logout</button>
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'intelligence' %}">360° View</a>
+                <a href="{% url 'payments' %}">Payments</a>
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'logout' %}">Logout</a>
             </div>
         </div>
 
@@ -34,17 +32,6 @@
                 <div class="card" style="margin-bottom: 24px;">
                     <h2 class="section-title">Your Compliance Snapshot</h2>
                     <p style="margin: 0; color: #475569;">Your current compliance score is <strong>68%</strong>. Keep your data updated and access payment tools instantly.</p>
-                </div>
-
-                <div class="card" style="margin-bottom: 24px;">
-                    <div style="font-size: 0.82rem; text-transform: uppercase; letter-spacing: .18em; color: #2563eb; margin-bottom: 12px;">Innovation Idea</div>
-                    <h3 class="section-title">MKodi (Mobile-Kodi)</h3>
-                    <p style="color: #475569; line-height: 1.85;">A mobile-first digital platform designed to bridge fragmented government data and the informal economy in Tanzania through zero-rated access and simple USSD onboarding.</p>
-                    <p style="margin-top: 18px; font-weight: 700; color: #111827;">Tagline: The Future of Integrated Revenue Intelligence in Tanzania</p>
-                    <div style="margin-top: 18px; color: #475569; font-size: 0.95rem;">
-                        <p><strong>Submitted by:</strong> Micaih Meshark Nyimbi</p>
-                        <p><strong>Date:</strong> 14 July 2026</p>
-                    </div>
                 </div>
 
                 <div class="grid-2" style="margin-bottom: 24px; gap: 20px;">
@@ -72,9 +59,9 @@
                     <p class="text-gray-500 text-center py-12">Click button below to load full profile</p>
                 </div>
 
-                <button onclick="load360View()"
-                        class="mt-6 w-full bg-green-700 hover:bg-green-800 text-white py-4 rounded-2xl font-semibold text-lg">
-                    🔄 Load 360° View
+                <button id="load360Button" type="button" onclick="load360View()" class="btn-360">
+                    <span class="btn-360-icon" aria-hidden="true">↻</span>
+                    <span>Load 360° View</span>
                 </button>
             </div>
 
@@ -95,7 +82,15 @@
                     <p><strong>Full Name:</strong> {{ user_name }}</p>
                     <p><strong>TIN:</strong> {{ user_tin }}</p>
                     {% if user_email %}<p><strong>Email:</strong> {{ user_email }}</p>{% endif %}
-                    <p><strong>Compliance Score:</strong> 68%</p>
+                    {% if taxpayer %}
+                    <p><strong>Phone:</strong> {{ taxpayer.phone_number }}</p>
+                    <p><strong>Business:</strong> {{ taxpayer.business_name|default:"Not provided" }}</p>
+                    <p><strong>BRELA Number:</strong> {{ taxpayer.brela_number|default:"Not provided" }}</p>
+                    <p><strong>Land Parcel:</strong> {{ taxpayer.land_parcel|default:"Not provided" }}</p>
+                    <p><strong>Estimated Income:</strong> TZS {{ taxpayer.estimated_income }}</p>
+                    <p><strong>Tax Compliance:</strong> {{ taxpayer.tax_compliance_score }}%</p>
+                    <p><strong>Credit Score:</strong> {{ taxpayer.credit_score }}</p>
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -104,13 +99,20 @@
     <script>
 function load360View() {
     const resultDiv = document.getElementById('viewResult');
+    const loadButton = document.getElementById('load360Button');
+    loadButton.disabled = true;
+    loadButton.setAttribute('aria-busy', 'true');
+    loadButton.querySelector('span:last-child').textContent = 'Loading profile...';
     resultDiv.innerHTML = `<p class="text-center py-8">Loading 360° View...</p>`;
 
-    fetch('/api/360-view/12345678901/')
+    fetch('/api/360-view/{{ user_tin|urlencode }}/')
         .then(response => response.json())
         .then(data => {
             if (!data.success) {
                 resultDiv.innerHTML = `<p class="text-red-600">${data.error || 'Failed to load'}</p>`;
+                loadButton.disabled = false;
+                loadButton.removeAttribute('aria-busy');
+                loadButton.querySelector('span:last-child').textContent = 'Try again';
                 return;
             }
 
@@ -123,6 +125,8 @@ function load360View() {
                             <div><strong>Name:</strong> ${tp.name}</div>
                             <div><strong>TIN:</strong> ${tp.tin_number}</div>
                             <div><strong>Phone:</strong> ${tp.phone}</div>
+                            <div><strong>Email:</strong> ${tp.email || 'Not provided'}</div>
+                            <div><strong>Business:</strong> ${tp.business_name || 'Not provided'}</div>
                             <div><strong>Est. Income:</strong> TZS ${parseInt(tp.estimated_income).toLocaleString()}</div>
                         </div>
                     </div>
@@ -158,9 +162,15 @@ function load360View() {
                 </div>
             `;
             resultDiv.innerHTML = html;
+            loadButton.disabled = false;
+            loadButton.removeAttribute('aria-busy');
+            loadButton.querySelector('span:last-child').textContent = 'Refresh 360° View';
         })
         .catch(() => {
             resultDiv.innerHTML = `<p class="text-red-600">Error loading data. Make sure server is running.</p>`;
+            loadButton.disabled = false;
+            loadButton.removeAttribute('aria-busy');
+            loadButton.querySelector('span:last-child').textContent = 'Try again';
         });
 }
 </script>
