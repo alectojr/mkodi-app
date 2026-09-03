@@ -4,6 +4,59 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from taxpayers.models import Taxpayer
+
+
+def sync_taxpayer_from_signup(tin, full_name, phone, email):
+    taxpayer, created = Taxpayer.objects.get_or_create(
+        tin_number=tin,
+        defaults={
+            'nida_number': tin,
+            'full_name': full_name,
+            'phone_number': phone,
+            'email': email or None,
+        },
+    )
+
+    if not created:
+        updated = False
+        if taxpayer.full_name != full_name:
+            taxpayer.full_name = full_name
+            updated = True
+        if taxpayer.phone_number != phone:
+            taxpayer.phone_number = phone
+            updated = True
+        if (taxpayer.email or '') != (email or ''):
+            taxpayer.email = email or None
+            updated = True
+        if not taxpayer.nida_number:
+            taxpayer.nida_number = tin
+            updated = True
+        if updated:
+            taxpayer.save()
+
+    return taxpayer
+
+
+def sync_user_from_taxpayer(user):
+    try:
+        taxpayer = Taxpayer.objects.get(tin_number=user.username)
+    except Taxpayer.DoesNotExist:
+        return user
+
+    changed = False
+    if taxpayer.full_name and user.first_name != taxpayer.full_name:
+        user.first_name = taxpayer.full_name
+        changed = True
+    if taxpayer.email and user.email != taxpayer.email:
+        user.email = taxpayer.email
+        changed = True
+
+    if changed:
+        user.save()
+
+    return user
+
 
 # Signup View
 def signup_view(request):
@@ -34,6 +87,8 @@ def signup_view(request):
                 email=email if email else None,
                 first_name=full_name
             )
+            sync_taxpayer_from_signup(tin, full_name, phone, email)
+            sync_user_from_taxpayer(user)
             login(request, user)
             return redirect('home')
         except Exception as ex:
@@ -50,6 +105,7 @@ def login_view(request):
 
         user = authenticate(request, username=tin, password=password)
         if user is not None:
+            sync_user_from_taxpayer(user)
             login(request, user)
             return redirect('home')
         else:
