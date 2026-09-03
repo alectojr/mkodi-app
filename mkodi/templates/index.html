@@ -11,13 +11,29 @@
     <div class="page-content">
         {% include 'partials/portal_nav.html' %}
 
-        <div class="flex-1 max-w-3xl" style="margin-top: 28px;">
+        <section class="dashboard-overview">
+            <div class="dashboard-title-row">
+                <div>
+                    <p class="eyebrow">Overview</p>
+                    <h1>Dashboard</h1>
+                    <p>Monitor your tax profile and take action quickly.</p>
+                </div>
+                <a class="dashboard-primary-action" href="{% url 'intelligence' %}">Open 360° View <span>→</span></a>
+            </div>
+            <div class="dashboard-stats">
+                <div class="dashboard-stat"><span class="stat-icon stat-icon-blue">◈</span><div><small>Compliance score</small><strong>{% if taxpayer %}{{ taxpayer.tax_compliance_score }}%{% else %}--{% endif %}</strong></div></div>
+                <div class="dashboard-stat"><span class="stat-icon stat-icon-purple">◉</span><div><small>Credit score</small><strong>{% if taxpayer %}{{ taxpayer.credit_score }}{% else %}--{% endif %}</strong></div></div>
+                <div class="dashboard-stat"><span class="stat-icon stat-icon-green">▣</span><div><small>Account status</small><strong>{% if taxpayer and taxpayer.is_active %}Active{% else %}Pending{% endif %}</strong></div></div>
+            </div>
+        </section>
+
+        <div class="flex-1 max-w-3xl dashboard-content" style="margin-top: 28px;">
             
             <!-- Feed / Home -->
             <div id="feedSection" class="section">
                 <div class="card" style="margin-bottom: 24px;">
                     <h2 class="section-title">Your Compliance Snapshot</h2>
-                    <p style="margin: 0; color: #475569;">Your current compliance score is <strong>68%</strong>. Keep your data updated and access payment tools instantly.</p>
+                    <p style="margin: 0; color: #475569;">Your current compliance score is <strong>{% if taxpayer %}{{ taxpayer.tax_compliance_score }}%{% else %}not available{% endif %}</strong>. Keep your data updated and access payment tools instantly.</p>
                 </div>
 
                 <div class="grid-2" style="margin-bottom: 24px; gap: 20px;">
@@ -26,11 +42,11 @@
                         <h3 style="margin: 0 0 8px; font-size: 1.1rem;">Pay Tax via USSD</h3>
                         <p style="margin: 0; color: #475569;">Fast · Zero-rated · No internet needed</p>
                     </button>
-                    <button onclick="makePayment()" class="card" style="text-align: left; border: 1px solid #dbeafe;">
+                    <a href="{% url 'payments' %}" class="card dashboard-action-card" style="text-align: left; border: 1px solid #dbeafe;">
                         <div style="font-size: 2.4rem; margin-bottom: 18px;">💰</div>
                         <h3 style="margin: 0 0 8px; font-size: 1.1rem;">Make Payment</h3>
                         <p style="margin: 0; color: #475569;">GePG + Mobile Money</p>
-                    </button>
+                    </a>
                 </div>
 
 

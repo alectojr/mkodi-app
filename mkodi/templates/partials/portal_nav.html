@@ -1,7 +1,13 @@
 <aside class="portal-sidebar">
-    <a class="sidebar-brand" href="{% url 'home' %}">
-        <strong>MKodi</strong>
-        <span>Revenue Portal</span>
+    <a class="sidebar-account" href="{% url 'profile' %}">
+        <span class="sidebar-avatar">
+            {% if request.user.profile.photo %}<img src="{{ request.user.profile.photo.url }}" alt="Profile photo">{% else %}{{ request.user.first_name|default:request.user.username|first|upper }}{% endif %}
+        </span>
+        <span class="sidebar-account-copy">
+            <strong>{{ request.user.first_name|default:request.user.username }}</strong>
+            <small>Taxpayer account</small>
+        </span>
+        <span class="sidebar-chevron">⌄</span>
     </a>
     <nav class="sidebar-menu" aria-label="Main navigation">
         <a class="{% if request.resolver_match.url_name == 'home' %}is-active{% endif %}" href="{% url 'home' %}"><span class="menu-icon">⌂</span>Dashboard</a>
@@ -15,11 +21,6 @@
 
 <header class="portal-topbar">
     <div class="topbar-context">MKodi Dashboard</div>
-    <div class="topbar-user">
-        <span class="user-avatar">{{ request.user.first_name|default:request.user.username|first|upper }}</span>
-        <span><strong>{{ request.user.first_name|default:request.user.username }}</strong><small>Taxpayer account</small></span>
-        <span class="topbar-chevron">⌄</span>
-    </div>
 </header>
 
 <div class="dashboard-hero card">
